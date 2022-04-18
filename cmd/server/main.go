@@ -65,5 +65,6 @@ func main() {
 		})
 	})
 	r.POST("/user/register", user.Register)
+	r.POST("/user/login", user.Login)
 	r.Run("127.0.0.1:8080") // 监听并在 0.0.0.0:8080 上启动服务
 }

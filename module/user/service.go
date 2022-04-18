@@ -1,6 +1,8 @@
 package user
 
 import (
+	"errors"
+
 	"github.com/crazyhl/yzyx-materials/internal"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
@@ -25,4 +27,23 @@ func register(username, password string) (*User, error) {
 
 	log.Error("register user err: ", result.Error)
 	return nil, result.Error
+}
+
+var ErrUserNotFound = errors.New("用户名或密码错误")
+
+func login(username, password string) (*User, error) {
+	user := &User{}
+	internal.DB.Where("username = ?", username).First(&user)
+	if user.ID > 0 {
+		// 找到用户了
+		// 验证密码
+		err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+		if err != nil {
+			return user, ErrUserNotFound
+		}
+		return user, nil
+	} else {
+		// 没有找到用户
+		return user, ErrUserNotFound
+	}
 }
