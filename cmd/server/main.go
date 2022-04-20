@@ -72,8 +72,10 @@ func main() {
 	router.POST("/user/login", user.Login)
 
 	srv := &http.Server{
-		Addr:    ":8080",
-		Handler: router,
+		Addr:         ":8080",
+		Handler:      router,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 5 * time.Second,
 	}
 
 	go func() {
