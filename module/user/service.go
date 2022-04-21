@@ -1,8 +1,6 @@
 package user
 
 import (
-	"errors"
-
 	"github.com/crazyhl/yzyx-materials/internal"
 	"github.com/golang-jwt/jwt"
 	"github.com/golang-module/carbon/v2"
@@ -32,9 +30,6 @@ func register(username, password string) (*User, error) {
 	return nil, result.Error
 }
 
-var ErrUserNotFound = errors.New("用户名或密码错误")
-var ErrGetJWTError = errors.New("登录失败") // 获取用户 jwt 失败
-
 // login 登录
 func login(username, password string) (*UserDto, error) {
 	userDto := &UserDto{}
@@ -50,7 +45,7 @@ func login(username, password string) (*UserDto, error) {
 
 		userDto.ID = user.ID
 		userDto.Username = user.Username
-		tokenStr, err := generateJWT(userDto)
+		tokenStr, err := GenerateJWT(user)
 		if err != nil {
 			return userDto, ErrGetJWTError
 		}
@@ -64,7 +59,7 @@ func login(username, password string) (*UserDto, error) {
 }
 
 // generateJWT 生成JWT
-func generateJWT(user *UserDto) (string, error) {
+func GenerateJWT(user *User) (string, error) {
 	claims := &UserJwtClaims{
 		ID:       user.ID,
 		UserName: user.Username,
@@ -81,8 +76,6 @@ func generateJWT(user *UserDto) (string, error) {
 	}
 	return tokenString, err
 }
-
-var ErrorJWTInvalid = errors.New("验证失败，请重新登录") // 无效的 JWT
 
 // ParseJWT 转换解析JWT
 func ParseJwt(authorization string) (*UserJwtClaims, error) {
@@ -107,4 +100,14 @@ func ParseJwt(authorization string) (*UserJwtClaims, error) {
 	} else {
 		return nil, ErrorJWTInvalid
 	}
+}
+
+// GetByUid 根据uid获取用户
+func GetByUid(id uint) (*User, error) {
+	user := &User{}
+	result := internal.DB.First(&user, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return user, nil
 }
