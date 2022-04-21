@@ -30,7 +30,9 @@ func AuthRequired() gin.HandlerFunc {
 			}
 
 			if claims, ok := token.Claims.(*user.UserJwtClaims); ok && token.Valid {
-				fmt.Printf("%v ", claims)
+				// 验证时间
+				fmt.Println(claims.ExpiresAt)
+				c.Next()
 			} else {
 				c.JSON(401, gin.H{
 					"code":    401,
@@ -39,7 +41,6 @@ func AuthRequired() gin.HandlerFunc {
 				c.Abort()
 			}
 
-			c.Next()
 		} else {
 			c.JSON(401, gin.H{
 				"code":    401,

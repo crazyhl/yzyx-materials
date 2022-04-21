@@ -2,10 +2,10 @@ package user
 
 import (
 	"errors"
-	"time"
 
 	"github.com/crazyhl/yzyx-materials/internal"
 	"github.com/golang-jwt/jwt"
+	"github.com/golang-module/carbon"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
@@ -70,7 +70,7 @@ func generateJWT(user *UserDto) (string, error) {
 		UserName: user.Username,
 	}
 
-	claims.ExpiresAt = time.Now().Add(time.Hour * 24 * 7).Unix()
+	claims.ExpiresAt = carbon.Now().AddDays(7).Timestamp()
 	// Parse the token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
