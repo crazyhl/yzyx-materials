@@ -20,10 +20,23 @@ func AuthRequired() gin.HandlerFunc {
 				return []byte(viper.GetString("JWT_SECRET")), nil
 			})
 
+			if err != nil {
+				c.JSON(401, gin.H{
+					"code":    401,
+					"message": "校验失败，请重新登录",
+				})
+				c.Abort()
+				return
+			}
+
 			if claims, ok := token.Claims.(*user.UserJwtClaims); ok && token.Valid {
 				fmt.Printf("%v ", claims)
 			} else {
-				fmt.Println(err)
+				c.JSON(401, gin.H{
+					"code":    401,
+					"message": "校验失败，请重新登录2",
+				})
+				c.Abort()
 			}
 
 			c.Next()
