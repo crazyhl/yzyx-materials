@@ -43,12 +43,12 @@ func login(username, password string) (*UserDto, error) {
 			return userDto, ErrUserNotFound
 		}
 
-		userDto.ID = user.ID
-		userDto.Username = user.Username
 		tokenStr, err := GenerateJWT(user)
 		if err != nil {
 			return userDto, ErrGetJWTError
 		}
+		userDto.ID = user.ID
+		userDto.Username = user.Username
 		userDto.Token = tokenStr
 
 		return userDto, nil
