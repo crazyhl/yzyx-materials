@@ -78,6 +78,10 @@ func main() {
 				"message": "pong",
 			})
 		})
+		acc := authorized.Group("/account")
+		{
+			acc.POST("/add", account.Add)
+		}
 	}
 
 	srv := &http.Server{

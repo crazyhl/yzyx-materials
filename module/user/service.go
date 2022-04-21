@@ -43,7 +43,7 @@ func login(username, password string) (*UserDto, error) {
 			return userDto, ErrUserNotFound
 		}
 
-		tokenStr, err := GenerateJWT(user)
+		tokenStr, err := GenerateJWT(*user)
 		if err != nil {
 			return userDto, ErrGetJWTError
 		}
@@ -59,7 +59,7 @@ func login(username, password string) (*UserDto, error) {
 }
 
 // generateJWT 生成JWT
-func GenerateJWT(user *User) (string, error) {
+func GenerateJWT(user User) (string, error) {
 	claims := &UserJwtClaims{
 		ID:       user.ID,
 		UserName: user.Username,
@@ -103,11 +103,11 @@ func ParseJwt(authorization string) (*UserJwtClaims, error) {
 }
 
 // GetByUid 根据uid获取用户
-func GetByUid(id uint) (*User, error) {
+func GetByUid(id uint) (User, error) {
 	user := &User{}
 	result := internal.DB.First(&user, id)
 	if result.Error != nil {
-		return nil, result.Error
+		return *user, result.Error
 	}
-	return user, nil
+	return *user, nil
 }
