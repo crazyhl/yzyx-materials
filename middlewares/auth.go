@@ -6,6 +6,7 @@ import (
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"github.com/spf13/viper"
 )
 
 func AuthRequired() gin.HandlerFunc {
@@ -16,7 +17,7 @@ func AuthRequired() gin.HandlerFunc {
 			jwtStringBody := authorization[7:]
 			fmt.Println(jwtStringBody)
 			token, err := jwt.ParseWithClaims(jwtStringBody, &user.UserJwtClaims{}, func(token *jwt.Token) (interface{}, error) {
-				return []byte("abcefgh"), nil
+				return []byte(viper.GetString("JWT_SECRET")), nil
 			})
 
 			if claims, ok := token.Claims.(*user.UserJwtClaims); ok && token.Valid {

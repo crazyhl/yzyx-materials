@@ -7,6 +7,7 @@ import (
 	"github.com/crazyhl/yzyx-materials/internal"
 	"github.com/golang-jwt/jwt"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -74,7 +75,7 @@ func generateJWT(user *UserDto) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Sign and get the complete encoded token as a string using the secret
-	tokenString, err := token.SignedString([]byte("abcefgh"))
+	tokenString, err := token.SignedString([]byte(viper.GetString("JWT_SECRET")))
 	if err != nil {
 		log.Error("Generate JWT err: ", err)
 	}
