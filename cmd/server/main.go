@@ -9,6 +9,7 @@ import (
 
 	"github.com/crazyhl/yzyx-materials/internal"
 	"github.com/crazyhl/yzyx-materials/middlewares"
+	"github.com/crazyhl/yzyx-materials/module/account"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -59,6 +60,7 @@ func init() {
 	initViper()
 	internal.InitDb()
 	user.AutoMigrate()
+	account.AutoMigrate()
 }
 
 func main() {
