@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/crazyhl/yzyx-materials/internal"
+	"github.com/crazyhl/yzyx-materials/middlewares"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -63,13 +64,19 @@ func init() {
 func main() {
 	gin.SetMode(viper.GetString("RUN_MODE"))
 	router := gin.Default()
-	router.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
 	router.POST("/user/register", user.Register)
 	router.POST("/user/login", user.Login)
+
+	authorized := router.Group("/")
+	// AuthRequired() 中间件
+	authorized.Use(middlewares.AuthRequired())
+	{
+		authorized.GET("/ping", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"message": "pong",
+			})
+		})
+	}
 
 	srv := &http.Server{
 		Addr:         ":8080",

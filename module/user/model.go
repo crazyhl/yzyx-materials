@@ -13,7 +13,7 @@ type User struct {
 
 //自定义Claims
 type UserJwtClaims struct {
-	ID       uint
-	UserName string
+	ID       uint   `json:"id"`
+	UserName string `json:"username"`
 	jwt.StandardClaims
 }
