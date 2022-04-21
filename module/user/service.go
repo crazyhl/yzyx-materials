@@ -5,7 +5,7 @@ import (
 
 	"github.com/crazyhl/yzyx-materials/internal"
 	"github.com/golang-jwt/jwt"
-	"github.com/golang-module/carbon"
+	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/bcrypt"
@@ -80,4 +80,31 @@ func generateJWT(user *UserDto) (string, error) {
 		log.Error("Generate JWT err: ", err)
 	}
 	return tokenString, err
+}
+
+var ErrorJWTInvalid = errors.New("验证失败，请重新登录") // 无效的 JWT
+
+// ParseJWT 转换解析JWT
+func ParseJwt(authorization string) (*UserJwtClaims, error) {
+	jwtStringHeader := authorization[0:6]
+	if jwtStringHeader == "Bearer" {
+		jwtStringBody := authorization[7:]
+		token, err := jwt.ParseWithClaims(jwtStringBody, &UserJwtClaims{}, func(token *jwt.Token) (interface{}, error) {
+			return []byte(viper.GetString("JWT_SECRET")), nil
+		})
+
+		if err != nil {
+			return nil, ErrorJWTInvalid
+		}
+
+		if claims, ok := token.Claims.(*UserJwtClaims); ok && token.Valid {
+			// 验证时间
+			return claims, nil
+		} else {
+			return nil, ErrorJWTInvalid
+		}
+
+	} else {
+		return nil, ErrorJWTInvalid
+	}
 }
