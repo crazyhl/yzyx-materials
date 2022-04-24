@@ -20,16 +20,7 @@ func add(form accountAddForm) (*AccountDto, error) {
 	}
 
 	// 将 account 转换为 AccountDto
-	accountDto := &AccountDto{
-		ID:      account.ID,
-		Name:    account.Name,
-		Desc:    account.Description,
-		Total:   account.TotalMoney,
-		Expect:  account.ExpectTotalMoney,
-		PerPart: account.PerPartMoney,
-		Created: account.CreatedAt,
-		Updated: account.UpdatedAt,
-	}
+	accountDto := account.ToDto()
 
 	return accountDto, nil
 }
@@ -40,16 +31,7 @@ func list(c *gin.Context) []*AccountDto {
 	accountDtos := []*AccountDto{}
 	db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(user.User).ID).Find(&accounts)
 	for _, account := range accounts {
-		accountDtos = append(accountDtos, &AccountDto{
-			ID:      account.ID,
-			Name:    account.Name,
-			Desc:    account.Description,
-			Total:   account.TotalMoney,
-			Expect:  account.ExpectTotalMoney,
-			PerPart: account.PerPartMoney,
-			Created: account.CreatedAt,
-			Updated: account.UpdatedAt,
-		})
+		accountDtos = append(accountDtos, account.ToDto())
 	}
 	return accountDtos
 }

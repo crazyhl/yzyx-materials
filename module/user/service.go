@@ -47,8 +47,7 @@ func login(username, password string) (*UserDto, error) {
 		if err != nil {
 			return userDto, ErrGetJWTError
 		}
-		userDto.ID = user.ID
-		userDto.Username = user.Username
+		userDto = user.ToDto()
 		userDto.Token = tokenStr
 
 		return userDto, nil

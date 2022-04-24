@@ -17,3 +17,10 @@ type UserJwtClaims struct {
 	UserName string `json:"username"`
 	jwt.StandardClaims
 }
+
+func (u User) ToDto() *UserDto {
+	return &UserDto{
+		ID:       u.ID,
+		Username: u.Username,
+	}
+}
