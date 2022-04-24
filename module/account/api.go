@@ -40,3 +40,12 @@ func Add(c *gin.Context) {
 		"data":    accountDto,
 	})
 }
+
+func List(c *gin.Context) {
+	accounts := list(c)
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "获取账户列表成功",
+		"data":    accounts,
+	})
+}
