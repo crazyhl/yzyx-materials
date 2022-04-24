@@ -26,7 +26,7 @@ func Add(c *gin.Context) {
 		return
 	}
 	accAddForm.User = c.MustGet("user").(user.User)
-	account, err := add(accAddForm)
+	accountDto, err := add(accAddForm)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code":    http.StatusInternalServerError,
@@ -37,6 +37,6 @@ func Add(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "添加账户成功",
-		"data":    account,
+		"data":    accountDto,
 	})
 }

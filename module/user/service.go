@@ -87,6 +87,7 @@ func ParseJwt(authorization string) (*UserJwtClaims, error) {
 		})
 
 		if err != nil {
+			log.Error("Parse JWT err: ", err)
 			return nil, ErrorJWTInvalid
 		}
 
