@@ -8,11 +8,12 @@ import (
 )
 
 type accountAddForm struct {
-	Name             string  `form:"name" json:"name" binding:"required"`
-	Description      string  `form:"description" json:"description"`
-	ExpectTotalMoney float64 `form:"expect_total_money" json:"expect_total_money"`
-	PerPartMoney     float64 `form:"per_part_money" json:"per_part_money" binding:"required_with=ExpectTotalMoney"`
-	User             user.User
+	Name               string  `form:"name" json:"name" binding:"required"`
+	Description        string  `form:"description" json:"description"`
+	ExpectTotalMoney   float64 `form:"expect_total_money" json:"expect_total_money" binding:"numeric,gt=0"`
+	PerPartMoney       float64 `form:"per_part_money" json:"per_part_money" binding:"required_with=ExpectTotalMoney,numeric,gt=0"`
+	ExpectRateOfReturn uint8   `form:"expect_rate_of_return" json:"expect_rate_of_return" binding:"numeric,gt=0,lte=100"`
+	User               user.User
 }
 
 // 添加账户

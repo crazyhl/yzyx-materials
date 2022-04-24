@@ -9,11 +9,12 @@ import (
 // addAccount 添加账户
 func add(form accountAddForm) (*AccountDto, error) {
 	account := &Account{
-		Name:             form.Name,
-		Description:      form.Description,
-		User:             form.User,
-		ExpectTotalMoney: form.ExpectTotalMoney,
-		PerPartMoney:     form.PerPartMoney,
+		Name:               form.Name,
+		Description:        form.Description,
+		User:               form.User,
+		ExpectTotalMoney:   form.ExpectTotalMoney,
+		PerPartMoney:       form.PerPartMoney,
+		ExpectRateOfReturn: form.ExpectRateOfReturn,
 	}
 	if err := db.DB.Create(account).Error; err != nil {
 		return nil, err
