@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/crazyhl/yzyx-materials/internal"
+	"github.com/crazyhl/yzyx-materials/internal/db"
 	"github.com/crazyhl/yzyx-materials/middlewares"
 	"github.com/crazyhl/yzyx-materials/module/account"
 	"github.com/crazyhl/yzyx-materials/module/user"
@@ -58,7 +58,7 @@ func initViper() {
 func init() {
 	initLogger()
 	initViper()
-	internal.InitDb()
+	db.InitDb()
 	user.AutoMigrate()
 	account.AutoMigrate()
 }

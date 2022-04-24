@@ -1,8 +1,6 @@
 package account
 
-import (
-	"github.com/crazyhl/yzyx-materials/internal"
-)
+import "github.com/crazyhl/yzyx-materials/internal/db"
 
 func add(form accountAddForm) (*AccountDto, error) {
 	account := &Account{
@@ -12,7 +10,7 @@ func add(form accountAddForm) (*AccountDto, error) {
 		ExpectTotalMoney: form.ExpectTotalMoney,
 		PerPartMoney:     form.PerPartMoney,
 	}
-	if err := internal.DB.Create(account).Error; err != nil {
+	if err := db.DB.Create(account).Error; err != nil {
 		return nil, err
 	}
 

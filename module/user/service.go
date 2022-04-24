@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/crazyhl/yzyx-materials/internal"
+	"github.com/crazyhl/yzyx-materials/internal/db"
 	"github.com/golang-jwt/jwt"
 	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
@@ -20,7 +20,7 @@ func register(username, password string) (*User, error) {
 		Username: username,
 		Password: string(hashPassword),
 	}
-	result := internal.DB.Create(user)
+	result := db.DB.Create(user)
 
 	if user.ID > 0 {
 		return user, nil
@@ -34,7 +34,7 @@ func register(username, password string) (*User, error) {
 func login(username, password string) (*UserDto, error) {
 	userDto := &UserDto{}
 	user := &User{}
-	internal.DB.Where("username = ?", username).First(&user)
+	db.DB.Where("username = ?", username).First(&user)
 	if user.ID > 0 {
 		// 找到用户了
 		// 验证密码
@@ -106,7 +106,7 @@ func ParseJwt(authorization string) (*UserJwtClaims, error) {
 // GetByUid 根据uid获取用户
 func GetByUid(id uint) (User, error) {
 	user := &User{}
-	result := internal.DB.First(&user, id)
+	result := db.DB.First(&user, id)
 	if result.Error != nil {
 		return *user, result.Error
 	}

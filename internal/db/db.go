@@ -1,6 +1,9 @@
-package internal
+package db
 
 import (
+	"strconv"
+
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -32,5 +35,27 @@ func InitDb() {
 	if err != nil { // Handle errors reading the config file
 		log.Error("init db failed err: ", err)
 		panic(err)
+	}
+}
+
+// Paginate 自定义的分页函数
+func Paginate(c *gin.Context) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		queryPage, ok := c.GetQuery("p")
+		if !ok {
+			queryPage = "1"
+		}
+		page, _ := strconv.Atoi(queryPage)
+		if page == 0 {
+			page = 1
+		}
+		queryPageSize, ok := c.GetQuery("pageSize")
+		if !ok {
+			queryPageSize = "10"
+		}
+		pageSize, _ := strconv.Atoi(queryPageSize)
+
+		offset := (page - 1) * pageSize
+		return db.Offset(offset).Limit(pageSize)
 	}
 }

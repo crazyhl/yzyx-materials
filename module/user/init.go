@@ -1,7 +1,7 @@
 package user
 
-import "github.com/crazyhl/yzyx-materials/internal"
+import "github.com/crazyhl/yzyx-materials/internal/db"
 
 func AutoMigrate() {
-	internal.DB.AutoMigrate(&User{})
+	db.DB.AutoMigrate(&User{})
 }
