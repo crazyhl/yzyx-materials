@@ -1,43 +1,36 @@
 package validator
 
 import (
-	"reflect"
-	"strings"
-
 	"github.com/gin-gonic/gin/binding"
-	"github.com/go-playground/locales/zh"
-	ut "github.com/go-playground/universal-translator"
-	"github.com/go-playground/validator/v10"
-	zh_translations "github.com/go-playground/validator/v10/translations/zh"
+	"github.com/gookit/validate"
+	"github.com/gookit/validate/locales/zhcn"
 )
 
-var trans ut.Translator
+// implements the binding.StructValidator
+type customValidator struct{}
 
-// 初始化 validation 翻译器
-func init() {
-	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
-		v.RegisterTagNameFunc(func(field reflect.StructField) string {
-			label := field.Tag.Get("label")
-			if label == "" {
-				return field.Name
-			}
-			return label
-		})
-		zh := zh.New()
-		uni := ut.New(zh, zh)
-		trans, _ = uni.GetTranslator("zh")
-		zh_translations.RegisterDefaultTranslations(v, trans)
+func (c *customValidator) ValidateStruct(ptr interface{}) error {
+	v := validate.Struct(ptr)
+	v.Validate() // do validating
+	zhcn.Register(v)
+
+	if v.Errors.Empty() {
+		return nil
 	}
-
+	return v.Errors
 }
 
-func Translate(err error) string {
-	errs := err.(validator.ValidationErrors)
-	transErrors := errs.Translate(trans)
-	errMsgs := make([]string, 0)
-	for _, e := range transErrors {
-		errMsgs = append(errMsgs, e)
-	}
+func (c *customValidator) Engine() interface{} {
 
-	return strings.Join(errMsgs, "\n")
+	return nil
+}
+
+// 初始化 validation
+func init() {
+	// 更改全局选项
+	zhcn.RegisterGlobal()
+	validate.Config(func(opt *validate.GlobalOption) {
+		opt.ValidateTag = "binding"
+	})
+	binding.Validator = &customValidator{}
 }

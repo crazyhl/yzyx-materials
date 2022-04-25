@@ -3,17 +3,16 @@ package account
 import (
 	"net/http"
 
-	"github.com/crazyhl/yzyx-materials/internal/validator"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 )
 
 type accountAddForm struct {
 	Name               string  `form:"name" json:"name" binding:"required" label:"账户名称"`
-	Description        string  `form:"description" json:"description"`
-	ExpectTotalMoney   float64 `form:"expect_total_money" json:"expect_total_money" binding:"numeric,gt=0"`
-	PerPartMoney       float64 `form:"per_part_money" json:"per_part_money" binding:"required_with=ExpectTotalMoney,numeric,gt=0"`
-	ExpectRateOfReturn uint8   `form:"expect_rate_of_return" json:"expect_rate_of_return" binding:"numeric,gt=0,lte=100"`
+	Description        string  `form:"description" json:"description" label:"账户描述"`
+	ExpectTotalMoney   float64 `form:"expect_total_money" json:"expect_total_money" binding:"float|gt:0" label:"预计投入总金额"`
+	PerPartMoney       float64 `form:"per_part_money" json:"per_part_money" binding:"required_with:ExpectTotalMoney|float|gt:0" label:"每份投入金额"`
+	ExpectRateOfReturn uint8   `form:"expect_rate_of_return" json:"expect_rate_of_return" binding:"uint|lte:100" label:"预计收益率"`
 	User               user.User
 }
 
@@ -23,7 +22,7 @@ func Add(c *gin.Context) {
 	if err := c.ShouldBind(&accAddForm); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code":    http.StatusBadRequest,
-			"message": "err: " + validator.Translate(err),
+			"message": "err: " + err.Error(),
 		})
 		return
 	}
