@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/crazyhl/yzyx-materials/internal/db"
+	_ "github.com/crazyhl/yzyx-materials/internal/validator"
 	"github.com/crazyhl/yzyx-materials/module/account"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/crazyhl/yzyx-materials/route"
