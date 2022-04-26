@@ -2,6 +2,7 @@ package account
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
@@ -48,5 +49,30 @@ func List(c *gin.Context) {
 		"code":    http.StatusOK,
 		"message": "获取账户列表成功",
 		"data":    accounts,
+	})
+}
+
+func Delete(ctx *gin.Context) {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+		return
+	}
+	err = delete(ctx, id)
+
+	if err != nil {
+		ctx.JSON(500, gin.H{
+			"code":    500,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"code":    200,
+		"message": "删除成功",
 	})
 }

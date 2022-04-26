@@ -25,6 +25,7 @@ func InitRouter(router *gin.Engine) {
 		{
 			acc.POST("/add", account.Add)
 			acc.GET("/list", account.List)
+			acc.DELETE("/delete/:id", account.Delete)
 		}
 	}
 }

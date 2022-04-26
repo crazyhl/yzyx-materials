@@ -36,3 +36,16 @@ func list(c *gin.Context) []*AccountDto {
 	}
 	return accountDtos
 }
+
+func delete(c *gin.Context, id uint64) error {
+	account := &Account{}
+	if err := db.DB.First(account, id).Error; err != nil {
+		return err
+	}
+
+	if account.UserId != c.MustGet("user").(user.User).ID {
+		return ErrAccountNotFound
+	}
+
+	return db.DB.Delete(account).Error
+}
