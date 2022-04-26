@@ -21,3 +21,13 @@ type Breed struct {
 	PercentForAccountExpectTotalMoney float64 `gorm:"type:decimal(10,2);not null;"`                       // 账户预计投入金额占比
 	PercentForAccountTotalMoney       float64 `gorm:"type:decimal(10,2);not null;"`                       // 账户投入金额占比
 }
+
+type BreedBuyItem struct {
+	model.Model
+	BreedId                      uint `gorm:"not null;"` // 品种ID
+	Breed                        Breed
+	Cost                         float64 `gorm:"type:decimal(10,2);not null;"` // 单价成本
+	TotalPart                    int     `gorm:"type:int(11);not null;"`       // 总份数
+	TotalMoney                   float64 `gorm:"type:decimal(10,2);not null;"` // 总金额
+	AccountPerPartMoneyTotalPart int     `gorm:"type:int(11);not null;"`       // 账户每份投入总份数
+}
