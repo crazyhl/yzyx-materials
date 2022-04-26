@@ -10,6 +10,7 @@ import (
 	"github.com/crazyhl/yzyx-materials/internal/db"
 	_ "github.com/crazyhl/yzyx-materials/internal/validator"
 	"github.com/crazyhl/yzyx-materials/module/account"
+	"github.com/crazyhl/yzyx-materials/module/breed"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/crazyhl/yzyx-materials/route"
 	"github.com/gin-gonic/gin"
@@ -62,6 +63,7 @@ func init() {
 	db.InitDb()
 	user.AutoMigrate()
 	account.AutoMigrate()
+	breed.AutoMigrate()
 }
 
 func main() {
