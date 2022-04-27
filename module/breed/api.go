@@ -20,14 +20,17 @@ type AddBreedForm struct {
 func Add(ctx *gin.Context) {
 	var form AddBreedForm
 	if err := ctx.ShouldBind(&form); err != nil {
-		ctx.JSON(500, gin.H{"error": err.Error()})
+		ctx.JSON(400, gin.H{
+			"code":    400,
+			"message": err.Error(),
+		})
 		return
 	}
 	// 根据账户ID查询账户信息
 	account, err := account.GetByIdWithUidInternal(form.AccountId, ctx.MustGet("user").(user.User).ID)
 	if err != nil {
-		ctx.JSON(500, gin.H{
-			"code":    500,
+		ctx.JSON(400, gin.H{
+			"code":    400,
 			"message": err.Error(),
 		})
 	}
@@ -35,8 +38,8 @@ func Add(ctx *gin.Context) {
 	form.Account = *account
 	breedDto, err := add(form)
 	if err != nil {
-		ctx.JSON(500, gin.H{
-			"code":    500,
+		ctx.JSON(400, gin.H{
+			"code":    400,
 			"message": err.Error(),
 		})
 		return
@@ -61,8 +64,8 @@ func Delete(ctx *gin.Context) {
 	uintId := uint(id)
 	err = delete(ctx, uintId)
 	if err != nil {
-		ctx.JSON(500, gin.H{
-			"code":    500,
+		ctx.JSON(400, gin.H{
+			"code":    400,
 			"message": err.Error(),
 		})
 		return

@@ -66,8 +66,8 @@ func Delete(ctx *gin.Context) {
 	err = delete(ctx, uintId)
 
 	if err != nil {
-		ctx.JSON(500, gin.H{
-			"code":    500,
+		ctx.JSON(400, gin.H{
+			"code":    400,
 			"message": err.Error(),
 		})
 		return
