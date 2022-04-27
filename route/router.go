@@ -33,6 +33,7 @@ func InitRouter(router *gin.Engine) {
 		breedGroup := authorized.Group("/breed")
 		{
 			breedGroup.POST("/add", breed.Add)
+			breedGroup.DELETE("/delete/:id", breed.Delete)
 		}
 	}
 }

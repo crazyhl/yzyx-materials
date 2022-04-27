@@ -1,6 +1,9 @@
 package breed
 
 import (
+	"net/http"
+	"strconv"
+
 	"github.com/crazyhl/yzyx-materials/module/account"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
@@ -42,5 +45,30 @@ func Add(ctx *gin.Context) {
 		"code":    200,
 		"message": "添加成功",
 		"data":    breedDto,
+	})
+}
+
+func Delete(ctx *gin.Context) {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+		return
+	}
+
+	uintId := uint(id)
+	err = delete(ctx, uintId)
+	if err != nil {
+		ctx.JSON(500, gin.H{
+			"code":    500,
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(200, gin.H{
+		"code":    200,
+		"message": "删除成功",
 	})
 }
