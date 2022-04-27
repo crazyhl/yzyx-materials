@@ -10,6 +10,13 @@ import (
 func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authorization := c.GetHeader("authorization")
+		if authorization == "" {
+			c.AbortWithStatusJSON(401, gin.H{
+				"code":    401,
+				"message": "请登录",
+			})
+			return
+		}
 		cliams, err := user.ParseJwt(authorization)
 		if err != nil {
 			c.AbortWithStatusJSON(401, gin.H{
