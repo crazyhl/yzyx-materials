@@ -38,7 +38,7 @@ func list(c *gin.Context) []*AccountDto {
 }
 
 // delete 删除账户
-func delete(c *gin.Context, id uint64) error {
+func delete(c *gin.Context, id uint) error {
 	account := &Account{}
 	if err := db.DB.First(account, id).Error; err != nil {
 		return err
@@ -51,7 +51,7 @@ func delete(c *gin.Context, id uint64) error {
 	return db.DB.Delete(account).Error
 }
 
-func edit(c *gin.Context, id uint64, form accountEditForm) error {
+func edit(c *gin.Context, id uint, form accountEditForm) error {
 	account := &Account{}
 	if err := db.DB.First(account, id).Error; err != nil {
 		return err
@@ -78,4 +78,13 @@ func edit(c *gin.Context, id uint64, form accountEditForm) error {
 	}
 
 	return db.DB.Save(account).Error
+}
+
+func GetByIdInternal(id uint) (*Account, error) {
+	account := &Account{}
+	if err := db.DB.First(account, id).Error; err != nil {
+		return nil, err
+	}
+
+	return account, nil
 }

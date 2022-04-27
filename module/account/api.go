@@ -61,7 +61,9 @@ func Delete(ctx *gin.Context) {
 		})
 		return
 	}
-	err = delete(ctx, id)
+
+	uintId := uint(id)
+	err = delete(ctx, uintId)
 
 	if err != nil {
 		ctx.JSON(500, gin.H{
@@ -94,6 +96,7 @@ func Edit(ctx *gin.Context) {
 		})
 		return
 	}
+	uintId := uint(id)
 	var accEditForm accountEditForm
 	if err := ctx.ShouldBind(&accEditForm); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -102,7 +105,7 @@ func Edit(ctx *gin.Context) {
 		})
 		return
 	}
-	err = edit(ctx, id, accEditForm)
+	err = edit(ctx, uintId, accEditForm)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    http.StatusInternalServerError,
