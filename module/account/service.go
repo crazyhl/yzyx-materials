@@ -39,26 +39,18 @@ func list(c *gin.Context) []*AccountDto {
 
 // delete 删除账户
 func delete(c *gin.Context, id uint) error {
-	account := &Account{}
-	if err := db.DB.First(account, id).Error; err != nil {
+	account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
+	if err != nil {
 		return err
-	}
-
-	if account.UserId != c.MustGet("user").(user.User).ID {
-		return ErrAccountNotFound
 	}
 
 	return db.DB.Delete(account).Error
 }
 
 func edit(c *gin.Context, id uint, form accountEditForm) error {
-	account := &Account{}
-	if err := db.DB.First(account, id).Error; err != nil {
+	account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
+	if err != nil {
 		return err
-	}
-
-	if account.UserId != c.MustGet("user").(user.User).ID {
-		return ErrAccountNotFound
 	}
 
 	if form.Name != "" {
@@ -84,6 +76,19 @@ func GetByIdInternal(id uint) (*Account, error) {
 	account := &Account{}
 	if err := db.DB.First(account, id).Error; err != nil {
 		return nil, err
+	}
+
+	return account, nil
+}
+
+func GetByIdWithUidInternal(id uint, uid uint) (*Account, error) {
+	account := &Account{}
+	if err := db.DB.First(account, id).Error; err != nil {
+		return nil, err
+	}
+
+	if account.UserId != uid {
+		return nil, ErrAccountNotFound
 	}
 
 	return account, nil

@@ -21,20 +21,14 @@ func Add(ctx *gin.Context) {
 		return
 	}
 	// 根据账户ID查询账户信息
-	account, err := account.GetByIdInternal(form.AccountId)
+	account, err := account.GetByIdWithUidInternal(form.AccountId, ctx.MustGet("user").(user.User).ID)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"code":    500,
 			"message": err.Error(),
 		})
 	}
-	if account.UserId != ctx.MustGet("user").(user.User).ID {
-		ctx.JSON(500, gin.H{
-			"code":    500,
-			"message": "账户不存在",
-		})
-		return
-	}
+
 	form.Account = *account
 	breedDto, err := add(form)
 	if err != nil {
