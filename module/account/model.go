@@ -22,15 +22,17 @@ type Account struct {
 
 func (a Account) ToDto() *AccountDto {
 	return &AccountDto{
-		ID:                 a.ID,
+		Dto: model.Dto{
+			ID:        a.ID,
+			CreatedAt: a.CreatedAt,
+			UpdatedAt: a.UpdatedAt,
+		},
 		Name:               a.Name,
 		Desc:               a.Description,
 		Total:              a.TotalMoney,
 		ExpectTotal:        a.ExpectTotalMoney,
 		ExpectRateOfReturn: a.ExpectRateOfReturn,
 		PerPart:            a.PerPartMoney,
-		Created:            a.CreatedAt,
-		Updated:            a.UpdatedAt,
 		RateOfReturn:       a.RateOfReturn,
 		ProfitAmount:       a.ProfitAmount,
 	}

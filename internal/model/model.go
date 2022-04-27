@@ -9,3 +9,9 @@ type Model struct {
 	UpdatedAt int64          `gorm:"autoUpdateTime;"` // 更新时间
 	DeletedAt gorm.DeletedAt `gorm:"index"`           // 软删除标志
 }
+
+type Dto struct {
+	ID        uint  `json:"id"`
+	CreatedAt int64 `json:"create_at"`
+	UpdatedAt int64 `json:"update_at"`
+}
