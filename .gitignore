@@ -3,3 +3,4 @@ env
 log/*
 !log/.gitkeep
 main
+tmp/build-errors.log

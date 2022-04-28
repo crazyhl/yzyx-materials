@@ -82,11 +82,10 @@ func GetByIdInternal(id uint) (*Account, error) {
 }
 
 func GetByIdWithUidInternal(id uint, uid uint) (*Account, error) {
-	account := &Account{}
-	if err := db.DB.First(account, id).Error; err != nil {
+	account, err := GetByIdInternal(id)
+	if err != nil {
 		return nil, err
 	}
-
 	if account.UserId != uid {
 		return nil, ErrAccountNotFound
 	}
