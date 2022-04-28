@@ -13,6 +13,7 @@ import (
 	"github.com/crazyhl/yzyx-materials/module/breed"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/crazyhl/yzyx-materials/route"
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -69,6 +70,7 @@ func init() {
 func main() {
 	gin.SetMode(viper.GetString("RUN_MODE"))
 	router := gin.Default()
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	route.InitRouter(router)
 
 	srv := &http.Server{
