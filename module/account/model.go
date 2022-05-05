@@ -12,12 +12,12 @@ type Account struct {
 	Description        string    `gorm:"type:varchar(255);default: '';not null"` // 账户描述，描述一下投资目的
 	UserId             uint      `gorm:"not null"`                               // 用户ID
 	User               user.User // 账户所属用户，外键
-	ExpectTotalMoney   float64   `gorm:"type:decimal(20,2);default: 0;not null"` // 预期投入总金额
+	ExpectTotalMoney   float64   `gorm:"type:decimal(20,4);default: 0;not null"` // 预期投入总金额
 	ExpectRateOfReturn uint8     `gorm:"type:tinyint;default: 0;not null"`       // 预期收益率
-	RateOfReturn       float64   `gorm:"type:decimal(20,2);default: 0;not null"` // 实际收益率
-	TotalMoney         float64   `gorm:"type:decimal(20,2);default: 0;not null"` // 已经投入总金额
-	PerPartMoney       float64   `gorm:"type:decimal(20,2);default: 0;not null"` // 每份金额
-	ProfitAmount       float64   `gorm:"type:decimal(20,2);default: 0;not null"` // 收益总金额
+	RateOfReturn       float64   `gorm:"type:decimal(20,4);default: 0;not null"` // 实际收益率
+	TotalMoney         float64   `gorm:"type:decimal(20,4);default: 0;not null"` // 已经投入总金额
+	PerPartMoney       float64   `gorm:"type:decimal(20,4);default: 0;not null"` // 每份金额
+	ProfitAmount       float64   `gorm:"type:decimal(20,4);default: 0;not null"` // 收益总金额
 }
 
 func (a Account) ToDto() *AccountDto {

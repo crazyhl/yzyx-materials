@@ -105,11 +105,15 @@ func updateBreedStatistics(b Breed) {
 	db.DB.Model(&BreedBuyItem{}).Where("breed_id = ?", b.ID).Where("type = ?", 2).
 		Select("sum(total_part) as total_part, sum(total_money) as total_money, sum(account_per_part_money_total_part) as account_per_part_money_total_part").
 		First(soldStatResult)
+
+	b.Account.TotalMoney -= b.TotalMoney
 	b.TotalPart = buyStatResult.TotalPart - soldStatResult.TotalPart
 	b.TotalMoney = buyStatResult.TotalMoney - soldStatResult.TotalMoney
+	b.Account.TotalMoney += b.TotalMoney
 	b.AccountPerPartMoneyTotalPart = buyStatResult.AccountPerPart - soldStatResult.AccountPerPart
 	b.Cost = b.TotalMoney / float64(b.TotalPart)
 	b.PercentForAccountExpectTotalMoney = b.TotalMoney / float64(b.Account.ExpectTotalMoney)
 	b.PercentForAccountTotalMoney = b.TotalMoney / float64(b.Account.TotalMoney)
 	db.DB.Save(&b)
+	db.DB.Save(&b.Account)
 }

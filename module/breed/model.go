@@ -12,14 +12,14 @@ type Breed struct {
 	Account                           account.Account
 	Code                              string  `gorm:"type:varchar(20);"`            // 品种编码
 	Name                              string  `gorm:"type:varchar(20);not null;"`   // 品种名称
-	Cost                              float64 `gorm:"type:decimal(10,2);not null;"` // 成本
-	Price                             float64 `gorm:"type:decimal(10,2);not null;"` // 当前价格 净值
+	Cost                              float64 `gorm:"type:decimal(10,4);not null;"` // 成本
+	Price                             float64 `gorm:"type:decimal(10,4);not null;"` // 当前价格 净值
 	TotalPart                         int     `gorm:"type:int(11);not null;"`       // 总份数
-	TotalMoney                        float64 `gorm:"type:decimal(10,2);not null;"` // 总金额
-	AccountPerPartMoneyTotalPart      float64 `gorm:"type:decimal(10,2);not null;"` // 账户每份投入总份数
-	TotalPrice                        float64 `gorm:"type:decimal(10,2);not null;"` // 总价格 持仓金额
-	PercentForAccountExpectTotalMoney float64 `gorm:"type:decimal(10,2);not null;"` // 账户预计投入金额占比
-	PercentForAccountTotalMoney       float64 `gorm:"type:decimal(10,2);not null;"` // 账户投入金额占比
+	TotalMoney                        float64 `gorm:"type:decimal(10,4);not null;"` // 总金额
+	AccountPerPartMoneyTotalPart      float64 `gorm:"type:decimal(10,4);not null;"` // 账户每份投入总份数
+	TotalPrice                        float64 `gorm:"type:decimal(10,4);not null;"` // 总价格 持仓金额
+	PercentForAccountExpectTotalMoney float64 `gorm:"type:decimal(10,4);not null;"` // 账户预计投入金额占比
+	PercentForAccountTotalMoney       float64 `gorm:"type:decimal(10,4);not null;"` // 账户投入金额占比
 }
 
 type BreedDto struct {
@@ -61,9 +61,9 @@ type BreedBuyItem struct {
 	BreedId                      uint `gorm:"not null;"` // 品种ID
 	Breed                        Breed
 	Type                         uint8   `gorm:"not null;index;"`              // 类型, 1 买入 2 卖出
-	Cost                         float64 `gorm:"type:decimal(10,2);not null;"` // 单价成本
+	Cost                         float64 `gorm:"type:decimal(10,4);not null;"` // 单价成本
 	TotalPart                    uint    `gorm:"type:int(11);not null;"`       // 总份数
-	Commission                   float64 `gorm:"type:decimal(10,2);not null;"` // 手续费
-	TotalMoney                   float64 `gorm:"type:decimal(10,2);not null;"` // 总金额
-	AccountPerPartMoneyTotalPart float64 `gorm:"type:decimal(10,2);not null;"` // 账户每份投入总份数
+	Commission                   float64 `gorm:"type:decimal(10,4);not null;"` // 手续费
+	TotalMoney                   float64 `gorm:"type:decimal(10,4);not null;"` // 总金额
+	AccountPerPartMoneyTotalPart float64 `gorm:"type:decimal(10,4);not null;"` // 账户每份投入总份数
 }
