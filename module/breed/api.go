@@ -81,6 +81,7 @@ type AddBreedItemForm struct {
 	Cost       float64 `form:"cost" binding:"required|float" label:"购买价格"`
 	TotalPart  uint    `form:"total_part" binding:"required|uint" label:"总份数"`
 	Commission float64 `form:"commission" binding:"required|float" label:"佣金"`
+	Type       uint8   `form:"type" binding:"required|uint" label:"类型"`
 }
 
 func AddBuyItem(ctx *gin.Context) {

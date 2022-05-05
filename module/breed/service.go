@@ -59,8 +59,14 @@ func addBreedBuyItem(ctx *gin.Context, form AddBreedItemForm) error {
 	if err != nil {
 		return err
 	}
+	totalMoney := 0.0
+	if form.Type == 1 {
+		totalMoney = form.Cost*float64(form.TotalPart) + form.Commission
+	} else {
+		totalMoney = form.Cost*float64(form.TotalPart) - form.Commission
 
-	totalMoney := form.Cost*float64(form.TotalPart) + form.Commission
+	}
+
 	accPerPartMoneyTotalPart := 0.0
 	if breed.Account.PerPartMoney > 0 {
 		accPerPartMoneyTotalPart = totalMoney / breed.Account.PerPartMoney
@@ -73,6 +79,7 @@ func addBreedBuyItem(ctx *gin.Context, form AddBreedItemForm) error {
 		TotalMoney:                   totalMoney,
 		Commission:                   form.Commission,
 		AccountPerPartMoneyTotalPart: accPerPartMoneyTotalPart,
+		Type:                         form.Type,
 	}
 
 	if err := db.DB.Create(breedBuyItem).Error; err != nil {
@@ -91,9 +98,13 @@ type breedStatisticsResult struct {
 }
 
 func updateBreedStatistics(breedId uint) {
-	statResult := &breedStatisticsResult{}
-	db.DB.Model(&BreedBuyItem{}).Where("breed_id = ?", breedId).
+	buyStatResult := &breedStatisticsResult{}
+	soldStatResult := &breedStatisticsResult{}
+	db.DB.Model(&BreedBuyItem{}).Where("breed_id = ?", breedId).Where("type = ?", 1).
 		Select("sum(total_part) as total_part, sum(total_money) as total_money, sum(account_per_part_money_total_part) as account_per_part_money_total_part").
-		First(statResult)
-	log.Info(statResult)
+		First(buyStatResult)
+	db.DB.Model(&BreedBuyItem{}).Where("breed_id = ?", breedId).Where("type = ?", 2).
+		Select("sum(total_part) as total_part, sum(total_money) as total_money, sum(account_per_part_money_total_part) as account_per_part_money_total_part").
+		First(soldStatResult)
+	log.Info(buyStatResult, soldStatResult)
 }

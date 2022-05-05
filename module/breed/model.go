@@ -60,7 +60,7 @@ type BreedBuyItem struct {
 	model.Model
 	BreedId                      uint `gorm:"not null;"` // 品种ID
 	Breed                        Breed
-	Type                         uint8   `gorm:"not null;index;"`              // 类型, 1 买入 2 卖出g
+	Type                         uint8   `gorm:"not null;index;"`              // 类型, 1 买入 2 卖出
 	Cost                         float64 `gorm:"type:decimal(10,2);not null;"` // 单价成本
 	TotalPart                    uint    `gorm:"type:int(11);not null;"`       // 总份数
 	Commission                   float64 `gorm:"type:decimal(10,2);not null;"` // 手续费
