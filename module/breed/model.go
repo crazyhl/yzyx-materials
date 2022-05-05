@@ -16,7 +16,7 @@ type Breed struct {
 	Price                             float64 `gorm:"type:decimal(10,2);not null;"` // 当前价格 净值
 	TotalPart                         int     `gorm:"type:int(11);not null;"`       // 总份数
 	TotalMoney                        float64 `gorm:"type:decimal(10,2);not null;"` // 总金额
-	AccountPerPartMoneyTotalPart      int     `gorm:"type:int(11);not null;"`       // 账户每份投入总份数
+	AccountPerPartMoneyTotalPart      float64 `gorm:"type:decimal(10,2);not null;"` // 账户每份投入总份数
 	TotalPrice                        float64 `gorm:"type:decimal(10,2);not null;"` // 总价格 持仓金额
 	PercentForAccountExpectTotalMoney float64 `gorm:"type:decimal(10,2);not null;"` // 账户预计投入金额占比
 	PercentForAccountTotalMoney       float64 `gorm:"type:decimal(10,2);not null;"` // 账户投入金额占比
@@ -30,7 +30,7 @@ type BreedDto struct {
 	Price                             float64 `json:"price"`
 	TotalPart                         int     `json:"total_part"`
 	TotalMoney                        float64 `json:"total_money"`
-	AccountPerPartMoneyTotalPart      int     `json:"account_per_part_money_total_part"`
+	AccountPerPartMoneyTotalPart      float64 `json:"account_per_part_money_total_part"`
 	TotalPrice                        float64 `json:"total_price"`
 	PercentForAccountExpectTotalMoney float64 `json:"percent_for_account_expect_total_money"`
 	PercentForAccountTotalMoney       float64 `json:"percent_for_account_total_money"`
