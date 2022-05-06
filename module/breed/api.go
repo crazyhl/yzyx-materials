@@ -143,3 +143,44 @@ func DeleteBuyItem(ctx *gin.Context) {
 		"message": "删除成功",
 	})
 }
+
+type EditBreedItemForm struct {
+	Cost       float64 `form:"cost" binding:"required|float" label:"购买价格"`
+	TotalPart  uint    `form:"total_part" binding:"required|uint" label:"总份数"`
+	Commission float64 `form:"commission" binding:"required|float" label:"佣金"`
+	Type       uint8   `form:"type" binding:"required|uint" label:"类型"`
+}
+
+func EditBuyItem(ctx *gin.Context) {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+		return
+	}
+	uintId := uint(id)
+
+	var form EditBreedItemForm
+	if err := ctx.ShouldBind(&form); err != nil {
+		ctx.JSON(400, gin.H{
+			"code":    400,
+			"message": err.Error(),
+		})
+		return
+	}
+	// 添加品种够买记录
+	err = editBreedBuyItem(ctx, uintId, form)
+	if err != nil {
+		ctx.JSON(400, gin.H{
+			"code":    400,
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(200, gin.H{
+		"code":    200,
+		"message": "修改成功",
+	})
+}

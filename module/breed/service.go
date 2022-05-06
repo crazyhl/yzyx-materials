@@ -151,3 +151,33 @@ func deleteBuyItem(ctx *gin.Context, id uint) error {
 	updateBreedStatistics(item.Breed)
 	return err
 }
+
+func editBreedBuyItem(ctx *gin.Context, id uint, form EditBreedItemForm) error {
+	item, err := getBreedBuyItemByIdWithUidInternal(id, ctx.MustGet("user").(user.User).ID)
+	if err != nil {
+		return err
+	}
+
+	totalMoney := 0.0
+	if form.Type == 1 {
+		totalMoney = form.Cost*float64(form.TotalPart) + form.Commission
+	} else {
+		totalMoney = form.Cost*float64(form.TotalPart) - form.Commission
+
+	}
+
+	accPerPartMoneyTotalPart := 0.0
+	if item.Breed.Account.PerPartMoney > 0 {
+		accPerPartMoneyTotalPart = totalMoney / item.Breed.Account.PerPartMoney
+	}
+
+	item.Cost = form.Cost
+	item.TotalPart = form.TotalPart
+	item.Commission = form.Commission
+	item.AccountPerPartMoneyTotalPart = accPerPartMoneyTotalPart
+	item.Type = form.Type
+	item.TotalMoney = totalMoney
+	err = db.DB.Save(item).Error
+	updateBreedStatistics(item.Breed)
+	return err
+}

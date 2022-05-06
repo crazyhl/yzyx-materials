@@ -38,6 +38,7 @@ func InitRouter(router *gin.Engine) {
 			{
 				breedBuyItemGroup.POST("/add", breed.AddBuyItem)
 				breedBuyItemGroup.DELETE("/delete/:id", breed.DeleteBuyItem)
+				breedBuyItemGroup.PUT("/update/:id", breed.EditBuyItem)
 			}
 		}
 	}
