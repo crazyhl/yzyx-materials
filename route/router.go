@@ -34,11 +34,11 @@ func InitRouter(router *gin.Engine) {
 		{
 			breedGroup.POST("/add", breed.Add)
 			breedGroup.DELETE("/delete/:id", breed.Delete)
-		}
-
-		breedBuyItemGroup := authorized.Group("/breed/buy_item")
-		{
-			breedBuyItemGroup.POST("/add", breed.AddBuyItem)
+			breedBuyItemGroup := breedGroup.Group("/buy_item")
+			{
+				breedBuyItemGroup.POST("/add", breed.AddBuyItem)
+				breedBuyItemGroup.DELETE("/delete/:id", breed.DeleteBuyItem)
+			}
 		}
 	}
 }

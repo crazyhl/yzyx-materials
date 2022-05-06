@@ -117,3 +117,37 @@ func updateBreedStatistics(b Breed) {
 	db.DB.Save(&b)
 	db.DB.Save(&b.Account)
 }
+
+func getBreedBuyItemByIdInternal(id uint) (*BreedBuyItem, error) {
+	item := &BreedBuyItem{}
+	if err := db.DB.Preload("Breed.Account.User").First(item, id).Error; err != nil {
+		return nil, err
+	}
+
+	return item, nil
+}
+
+func getBreedBuyItemByIdWithUidInternal(id, uid uint) (*BreedBuyItem, error) {
+	item, err := getBreedBuyItemByIdInternal(id)
+	if err != nil {
+		return nil, err
+	}
+
+	if item.Breed.Account.User.ID != uid {
+		return nil, ErrBreedNotYourAccount
+	}
+
+	return item, nil
+}
+
+// delete DeleteBreed 删除购买品种
+func deleteBuyItem(ctx *gin.Context, id uint) error {
+	item, err := getBreedBuyItemByIdWithUidInternal(id, ctx.MustGet("user").(user.User).ID)
+
+	if err != nil {
+		return err
+	}
+	err = db.DB.Delete(item).Error
+	updateBreedStatistics(item.Breed)
+	return err
+}
