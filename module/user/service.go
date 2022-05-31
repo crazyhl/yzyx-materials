@@ -10,7 +10,7 @@ import (
 )
 
 // Register 用户注册
-func register(username, password string) (*User, error) {
+func register(username, password string) (*UserDto, error) {
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Error("generate password err: ", err)
@@ -23,7 +23,14 @@ func register(username, password string) (*User, error) {
 	result := db.DB.Create(user)
 
 	if user.ID > 0 {
-		return user, nil
+		userDto := &UserDto{}
+		tokenStr, err := GenerateJWT(*user)
+		if err != nil {
+			return userDto, ErrGetJWTError
+		}
+		userDto = user.ToDto()
+		userDto.Token = tokenStr
+		return userDto, nil
 	}
 
 	log.Error("register user err: ", result.Error)
