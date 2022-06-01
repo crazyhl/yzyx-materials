@@ -37,6 +37,12 @@ func list(c *gin.Context) []*AccountDto {
 	return accountDtos
 }
 
+func getCount(c *gin.Context) int64 {
+	count := int64(0)
+	db.DB.Model(&Account{}).Where("user_id = ?", c.MustGet("user").(user.User).ID).Count(&count)
+	return count
+}
+
 // delete 删除账户
 func delete(c *gin.Context, id uint) error {
 	account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)

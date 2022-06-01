@@ -45,10 +45,14 @@ func Add(c *gin.Context) {
 
 func List(c *gin.Context) {
 	accounts := list(c)
+	count := getCount(c)
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "获取账户列表成功",
-		"data":    accounts,
+		"data": gin.H{
+			"data":  accounts,
+			"count": count,
+		},
 	})
 }
 
