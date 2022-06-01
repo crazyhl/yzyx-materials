@@ -52,6 +52,7 @@ func initViper() {
 	viper.SetConfigName("env")
 	viper.SetConfigType("env")
 	viper.AddConfigPath(runDir)
+	viper.AutomaticEnv()
 	err := viper.ReadInConfig() // Find and read the config file
 	if err != nil {             // Handle errors reading the config file
 		log.Error("read config file err: ", err)
