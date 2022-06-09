@@ -85,7 +85,7 @@ func main() {
 	route.InitRouter(router)
 
 	srv := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":" + viper.GetString("SERVER_PORT"),
 		Handler:      router,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 5 * time.Second,
