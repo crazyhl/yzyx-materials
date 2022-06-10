@@ -30,7 +30,7 @@ func add(form accountAddForm) (*AccountDto, error) {
 func list(c *gin.Context) []*AccountDto {
 	accounts := []*Account{}
 	accountDtos := []*AccountDto{}
-	db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(user.User).ID).Find(&accounts)
+	db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(user.User).ID).Order("id desc").Find(&accounts)
 	for _, account := range accounts {
 		accountDtos = append(accountDtos, account.ToDto())
 	}
