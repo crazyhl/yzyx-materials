@@ -53,10 +53,10 @@ func delete(c *gin.Context, id uint) error {
 	return db.DB.Delete(account).Error
 }
 
-func edit(c *gin.Context, id uint, form accountEditForm) error {
+func edit(c *gin.Context, id uint, form accountEditForm) (*AccountDto, error) {
 	account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if form.Name != "" {
@@ -75,7 +75,14 @@ func edit(c *gin.Context, id uint, form accountEditForm) error {
 		account.ExpectRateOfReturn = form.ExpectRateOfReturn
 	}
 
-	return db.DB.Save(account).Error
+	if err := db.DB.Save(account).Error; err != nil {
+		return nil, err
+	}
+
+	// 将 account 转换为 AccountDto
+	accountDto := account.ToDto()
+
+	return accountDto, nil
 }
 
 func GetByIdInternal(id uint) (*Account, error) {

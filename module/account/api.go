@@ -109,7 +109,7 @@ func Edit(ctx *gin.Context) {
 		})
 		return
 	}
-	err = edit(ctx, uintId, accEditForm)
+	accountDto, err := edit(ctx, uintId, accEditForm)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    http.StatusInternalServerError,
@@ -120,5 +120,6 @@ func Edit(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "修改账户成功",
+		"data":    accountDto,
 	})
 }
