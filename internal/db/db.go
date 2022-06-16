@@ -54,7 +54,7 @@ func Paginate(c *gin.Context) func(db *gorm.DB) *gorm.DB {
 		}
 		queryPageSize, ok := c.GetQuery("pageSize")
 		if !ok {
-			queryPageSize = "3"
+			queryPageSize = "10"
 		}
 		pageSize, _ := strconv.Atoi(queryPageSize)
 

@@ -3,7 +3,6 @@ package route
 import (
 	"github.com/crazyhl/yzyx-materials/middlewares"
 	"github.com/crazyhl/yzyx-materials/module/account"
-	"github.com/crazyhl/yzyx-materials/module/breed"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 )
@@ -28,18 +27,6 @@ func InitRouter(router *gin.Engine) {
 			acc.GET("/list", account.List)
 			acc.DELETE("/delete/:id", account.Delete)
 			acc.PUT("/update/:id", account.Edit)
-		}
-
-		breedGroup := authorized.Group("/breed")
-		{
-			breedGroup.POST("/add", breed.Add)
-			breedGroup.DELETE("/delete/:id", breed.Delete)
-			breedBuyItemGroup := breedGroup.Group("/buy_item")
-			{
-				breedBuyItemGroup.POST("/add", breed.AddBuyItem)
-				breedBuyItemGroup.DELETE("/delete/:id", breed.DeleteBuyItem)
-				breedBuyItemGroup.PUT("/update/:id", breed.EditBuyItem)
-			}
 		}
 	}
 }
