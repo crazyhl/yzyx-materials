@@ -88,7 +88,7 @@ func edit(c *gin.Context, id uint, form accountEditForm) (*AccountDto, error) {
 func GetByIdInternal(id uint) (*Account, error) {
 	account := &Account{}
 	if err := db.DB.First(account, id).Error; err != nil {
-		return nil, err
+		return nil, ErrAccountNotFound
 	}
 
 	return account, nil

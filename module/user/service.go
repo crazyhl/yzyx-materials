@@ -114,7 +114,7 @@ func GetByUid(id uint) (User, error) {
 	user := &User{}
 	result := db.DB.First(&user, id)
 	if result.Error != nil {
-		return *user, result.Error
+		return *user, ErrUserNotFound
 	}
 	return *user, nil
 }
