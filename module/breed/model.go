@@ -15,3 +15,15 @@ type Breed struct {
 	NetValue float64   `gorm:"type:decimal(20,4);not null"`      // 净值
 	Cost     float64   `gorm:"type:decimal(20,4);not null"`      // 成本
 }
+
+func (breed Breed) ToDto() *BreedDto {
+	// 将 account 转换为 AccountDto
+	breedTto := &BreedDto{
+		Code:     breed.Code,
+		Name:     breed.Name,
+		NetValue: breed.NetValue,
+		Cost:     breed.Cost,
+	}
+
+	return breedTto
+}
