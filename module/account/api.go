@@ -2,8 +2,8 @@ package account
 
 import (
 	"net/http"
-	"strconv"
 
+	"github.com/crazyhl/yzyx-materials/internal/params"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 )
@@ -57,7 +57,7 @@ func List(c *gin.Context) {
 }
 
 func Delete(ctx *gin.Context) {
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	id, err := params.GetUInt(ctx, "id")
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    http.StatusBadRequest,
@@ -66,8 +66,7 @@ func Delete(ctx *gin.Context) {
 		return
 	}
 
-	uintId := uint(id)
-	err = delete(ctx, uintId)
+	err = delete(ctx, id)
 
 	if err != nil {
 		ctx.JSON(400, gin.H{
@@ -92,7 +91,7 @@ type accountEditForm struct {
 }
 
 func Edit(ctx *gin.Context) {
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	id, err := params.GetUInt(ctx, "id")
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    http.StatusBadRequest,
@@ -100,7 +99,6 @@ func Edit(ctx *gin.Context) {
 		})
 		return
 	}
-	uintId := uint(id)
 	var accEditForm accountEditForm
 	if err := ctx.ShouldBind(&accEditForm); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -109,7 +107,7 @@ func Edit(ctx *gin.Context) {
 		})
 		return
 	}
-	accountDto, err := edit(ctx, uintId, accEditForm)
+	accountDto, err := edit(ctx, id, accEditForm)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    http.StatusInternalServerError,

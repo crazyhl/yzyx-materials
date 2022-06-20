@@ -2,8 +2,8 @@ package breed
 
 import (
 	"net/http"
-	"strconv"
 
+	"github.com/crazyhl/yzyx-materials/internal/params"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 )
@@ -49,7 +49,7 @@ type editForm struct {
 }
 
 func Edit(ctx *gin.Context) {
-	intId, err := strconv.Atoi(ctx.Param("id"))
+	id, err := params.GetUInt(ctx, "id")
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    http.StatusInternalServerError,
@@ -57,7 +57,6 @@ func Edit(ctx *gin.Context) {
 		})
 		return
 	}
-	id := uint(intId)
 
 	var form editForm
 	if err := ctx.ShouldBind(&form); err != nil {
