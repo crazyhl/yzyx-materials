@@ -2,6 +2,7 @@ package breed
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
@@ -10,12 +11,12 @@ import (
 type addForm struct {
 	Code     string  `form:"code" json:"code" binding:"required"`
 	Name     string  `form:"name" json:"name" binding:"required"`
-	NetValue float64 `form:"net_value" json:"net_value" binding:"required"`
-	Cost     float64 `form:"cost" json:"cost" binding:"required"`
+	NetValue float64 `form:"net_value" json:"net_value"`
+	Cost     float64 `form:"cost" json:"cost"`
 	User     user.User
 }
 
-func Add(ctx gin.Context) {
+func Add(ctx *gin.Context) {
 	var form addForm
 	if err := ctx.ShouldBind(&form); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -36,6 +37,48 @@ func Add(ctx gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "添加品种成功",
+		"data":    breedDto,
+	})
+}
+
+type editForm struct {
+	Code     string  `form:"code" json:"code" binding:"required"`
+	Name     string  `form:"name" json:"name" binding:"required"`
+	NetValue float64 `form:"net_value" json:"net_value"`
+	Cost     float64 `form:"cost" json:"cost"`
+}
+
+func Edit(ctx *gin.Context) {
+	intId, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+	id := uint(intId)
+
+	var form editForm
+	if err := ctx.ShouldBind(&form); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+		return
+	}
+
+	breedDto, err := edit(form, id, ctx.MustGet("user").(user.User).ID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "编辑品种成功",
 		"data":    breedDto,
 	})
 }

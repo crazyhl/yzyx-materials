@@ -16,13 +16,18 @@ type Breed struct {
 	Cost     float64   `gorm:"type:decimal(20,4);not null"`      // 成本
 }
 
-func (breed Breed) ToDto() *BreedDto {
+func (breed *Breed) ToDto() *BreedDto {
 	// 将 account 转换为 AccountDto
 	breedTto := &BreedDto{
 		Code:     breed.Code,
 		Name:     breed.Name,
 		NetValue: breed.NetValue,
 		Cost:     breed.Cost,
+		Dto: model.Dto{
+			ID:        breed.ID,
+			CreatedAt: breed.CreatedAt,
+			UpdatedAt: breed.UpdatedAt,
+		},
 	}
 
 	return breedTto
