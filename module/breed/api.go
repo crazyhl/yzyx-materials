@@ -81,3 +81,29 @@ func Edit(ctx *gin.Context) {
 		"data":    breedDto,
 	})
 }
+
+func Delete(ctx *gin.Context) {
+	id, err := params.GetUInt(ctx, "id")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+		return
+	}
+
+	err = delete(ctx.MustGet("user").(user.User).ID, id)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"code":    200,
+		"message": "删除成功",
+	})
+}

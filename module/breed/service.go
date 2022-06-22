@@ -45,6 +45,16 @@ func edit(form editForm, id, uid uint) (*BreedDto, error) {
 	return breedTto, nil
 }
 
+// delete 删除账户
+func delete(uid, id uint) error {
+	breed, err := getByIdWithUidInternal(id, uid)
+	if err != nil {
+		return err
+	}
+
+	return db.DB.Delete(breed).Error
+}
+
 // getByIdInternal 获取账户
 func getByIdInternal(id uint) (*Breed, error) {
 	breed := &Breed{}
