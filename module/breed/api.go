@@ -107,3 +107,16 @@ func Delete(ctx *gin.Context) {
 		"message": "删除成功",
 	})
 }
+
+func List(c *gin.Context) {
+	breeds := list(c)
+	count := getCount(c)
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "获取品种列表成功",
+		"data": gin.H{
+			"data":  breeds,
+			"count": count,
+		},
+	})
+}

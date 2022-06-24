@@ -2,6 +2,8 @@ package breed
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/db"
+	"github.com/crazyhl/yzyx-materials/module/user"
+	"github.com/gin-gonic/gin"
 )
 
 // add 添加账户
@@ -53,6 +55,23 @@ func delete(uid, id uint) error {
 	}
 
 	return db.DB.Delete(breed).Error
+}
+
+// listAccounts 获取账户列表
+func list(c *gin.Context) []*BreedDto {
+	breeds := []*Breed{}
+	breedDtos := []*BreedDto{}
+	db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(user.User).ID).Order("id desc").Find(&breeds)
+	for _, breed := range breeds {
+		breedDtos = append(breedDtos, breed.ToDto())
+	}
+	return breedDtos
+}
+
+func getCount(c *gin.Context) int64 {
+	count := int64(0)
+	db.DB.Model(&Breed{}).Where("user_id = ?", c.MustGet("user").(user.User).ID).Count(&count)
+	return count
 }
 
 // getByIdInternal 获取账户
