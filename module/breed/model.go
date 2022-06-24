@@ -8,21 +8,27 @@ import (
 // 品种 Model
 type Breed struct {
 	model.Model
-	UserId   uint      `gorm:"not null"` // 用户ID
-	User     user.User // 账户所属用户，外键
-	Code     string    `gorm:"type:varchar(32);not null;unique"` // 编码
-	Name     string    `gorm:"type:varchar(32);not null;unique"` // 名称
-	NetValue float64   `gorm:"type:decimal(20,4);not null"`      // 净值
-	Cost     float64   `gorm:"type:decimal(20,4);not null"`      // 成本
+	UserId        uint      `gorm:"not null"` // 用户ID
+	User          user.User // 账户所属用户，外键
+	Code          string    `gorm:"type:varchar(32);not null;unique"`        // 编码
+	Name          string    `gorm:"type:varchar(32);not null;unique"`        // 名称
+	NetValue      float64   `gorm:"type:decimal(20,4);not null"`             // 净值
+	Cost          float64   `gorm:"type:decimal(20,4);not null"`             // 成本
+	TotalCount    int64     `gorm:"not null;default:0;"`                     // 总份数
+	TotalCost     float64   `gorm:"type:decimal(20,4);not null; default:0;"` // 总成本
+	TotalNetValue float64   `gorm:"type:decimal(20,4);not null; default:0"`  // 总净值
 }
 
 func (breed *Breed) ToDto() *BreedDto {
 	// 将 account 转换为 AccountDto
 	breedTto := &BreedDto{
-		Code:     breed.Code,
-		Name:     breed.Name,
-		NetValue: breed.NetValue,
-		Cost:     breed.Cost,
+		Code:          breed.Code,
+		Name:          breed.Name,
+		NetValue:      breed.NetValue,
+		Cost:          breed.Cost,
+		TotalCount:    breed.TotalCount,
+		TotalCost:     breed.TotalCost,
+		TotalNetValue: breed.TotalNetValue,
 		Dto: model.Dto{
 			ID:        breed.ID,
 			CreatedAt: breed.CreatedAt,
