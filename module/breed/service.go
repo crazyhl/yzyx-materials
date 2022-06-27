@@ -36,6 +36,7 @@ func edit(form editForm, id, uid uint) (*BreedDto, error) {
 	breed.Name = form.Name
 	if form.NetValue > 0 {
 		breed.NetValue = form.NetValue
+		breed.TotalNetValue = float64(breed.TotalCount) * form.NetValue
 	}
 
 	if form.Cost > 0 {
@@ -77,6 +78,26 @@ func getCount(c *gin.Context) int64 {
 	count := int64(0)
 	db.DB.Model(&Breed{}).Where("user_id = ?", c.MustGet("user").(user.User).ID).Count(&count)
 	return count
+}
+
+// updateNetValue 更新净值
+func updateNetValue(uid, id uint, netValue float64) (*BreedDto, error) {
+	breed, err := getByIdWithUidInternal(id, uid)
+	if err != nil {
+		return nil, err
+	}
+
+	breed.NetValue = netValue
+	breed.TotalNetValue = float64(breed.TotalCount) * netValue
+
+	if err := db.DB.Save(breed).Error; err != nil {
+		return nil, err
+	}
+
+	// 将 account 转换为 AccountDto
+	breedTto := breed.ToDto()
+
+	return breedTto, nil
 }
 
 // getByIdInternal 获取账户

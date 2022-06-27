@@ -34,6 +34,7 @@ func InitRouter(router *gin.Engine) {
 		{
 			b.POST("/add", breed.Add)
 			b.PUT("/:id", breed.Edit)
+			b.PUT("/:id/netValue", breed.UpdateNetValue)
 			b.DELETE("/:id", breed.Delete)
 			b.GET("/list", breed.List)
 		}

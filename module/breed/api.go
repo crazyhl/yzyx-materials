@@ -120,3 +120,42 @@ func List(c *gin.Context) {
 		},
 	})
 }
+
+type updateNetValueForm struct {
+	NetValue float64 `form:"net_value" json:"net_value"`
+}
+
+// UpdateNetValue 更新净值
+func UpdateNetValue(ctx *gin.Context) {
+	id, err := params.GetUInt(ctx, "id")
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+
+	var form updateNetValueForm
+	if err := ctx.ShouldBind(&form); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+		return
+	}
+
+	breedDto, err := updateNetValue(ctx.MustGet("user").(user.User).ID, id, form.NetValue)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code":    http.StatusInternalServerError,
+			"message": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "更新净值成功",
+		"data":    breedDto,
+	})
+}
