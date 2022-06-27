@@ -34,8 +34,13 @@ func edit(form editForm, id, uid uint) (*BreedDto, error) {
 
 	breed.Code = form.Code
 	breed.Name = form.Name
-	breed.NetValue = form.NetValue
-	breed.Cost = form.Cost
+	if form.NetValue > 0 {
+		breed.NetValue = form.NetValue
+	}
+
+	if form.Cost > 0 {
+		breed.Cost = form.Cost
+	}
 
 	if err := db.DB.Save(breed).Error; err != nil {
 		return nil, err
