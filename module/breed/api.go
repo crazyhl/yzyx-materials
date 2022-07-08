@@ -2,6 +2,7 @@ package breed
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/crazyhl/yzyx-materials/internal/params"
 	"github.com/crazyhl/yzyx-materials/module/user"
@@ -28,9 +29,14 @@ func Add(ctx *gin.Context) {
 	form.User = ctx.MustGet("user").(user.User)
 	breedDto, err := add(form)
 	if err != nil {
+		message := err.Error()
+		if strings.HasPrefix(err.Error(), "Error 1062:") {
+			message = "该品种代码已存在，如列表没有，尝试去回收站恢复"
+		}
+
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    http.StatusInternalServerError,
-			"message": err.Error(),
+			"message": message,
 		})
 		return
 	}
