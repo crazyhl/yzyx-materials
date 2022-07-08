@@ -67,7 +67,12 @@ func delete(uid, id uint) error {
 func list(c *gin.Context) []*BreedDto {
 	breeds := []*Breed{}
 	breedDtos := []*BreedDto{}
-	db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(user.User).ID).Order("id desc").Find(&breeds)
+	query := db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(user.User).ID).Order("id desc")
+	filter := c.Query("filter")
+	if filter != "" {
+		query.Where(db.DB.Where("code like ?", "%"+filter+"%").Or("name like ?", "%"+filter+"%"))
+	}
+	query.Find(&breeds)
 	for _, breed := range breeds {
 		breedDtos = append(breedDtos, breed.ToDto())
 	}
