@@ -13,11 +13,10 @@ func CheckAccountUid() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id, err := params.GetUInt(c, "id")
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 				"code":    http.StatusBadRequest,
 				"message": "err: " + err.Error(),
 			})
-			return
 		}
 		account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
 

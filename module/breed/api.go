@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/crazyhl/yzyx-materials/internal/params"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 )
@@ -55,14 +54,6 @@ type editForm struct {
 }
 
 func Edit(ctx *gin.Context) {
-	id, err := params.GetUInt(ctx, "id")
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"code":    http.StatusInternalServerError,
-			"message": err.Error(),
-		})
-		return
-	}
 
 	var form editForm
 	if err := ctx.ShouldBind(&form); err != nil {
@@ -73,7 +64,7 @@ func Edit(ctx *gin.Context) {
 		return
 	}
 
-	breedDto, err := edit(form, id, ctx.MustGet("user").(user.User).ID)
+	breedDto, err := edit(ctx, form)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    http.StatusInternalServerError,
@@ -89,16 +80,7 @@ func Edit(ctx *gin.Context) {
 }
 
 func Delete(ctx *gin.Context) {
-	id, err := params.GetUInt(ctx, "id")
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code":    http.StatusBadRequest,
-			"message": "err: " + err.Error(),
-		})
-		return
-	}
-
-	err = delete(ctx.MustGet("user").(user.User).ID, id)
+	err := delete(ctx)
 
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -133,15 +115,6 @@ type updateNetValueForm struct {
 
 // UpdateNetValue 更新净值
 func UpdateNetValue(ctx *gin.Context) {
-	id, err := params.GetUInt(ctx, "id")
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"code":    http.StatusInternalServerError,
-			"message": err.Error(),
-		})
-		return
-	}
-
 	var form updateNetValueForm
 	if err := ctx.ShouldBind(&form); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -151,7 +124,7 @@ func UpdateNetValue(ctx *gin.Context) {
 		return
 	}
 
-	breedDto, err := updateNetValue(ctx.MustGet("user").(user.User).ID, id, form.NetValue)
+	breedDto, err := updateNetValue(ctx, form.NetValue)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    http.StatusInternalServerError,

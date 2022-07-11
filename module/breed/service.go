@@ -26,11 +26,8 @@ func add(form addForm) (*BreedDto, error) {
 }
 
 // edit 编辑账户
-func edit(form editForm, id, uid uint) (*BreedDto, error) {
-	breed, err := getByIdWithUidInternal(id, uid)
-	if err != nil {
-		return nil, err
-	}
+func edit(ctx *gin.Context, form editForm) (*BreedDto, error) {
+	breed := ctx.MustGet("breed").(*Breed)
 
 	breed.Code = form.Code
 	breed.Name = form.Name
@@ -54,11 +51,8 @@ func edit(form editForm, id, uid uint) (*BreedDto, error) {
 }
 
 // delete 删除账户
-func delete(uid, id uint) error {
-	breed, err := getByIdWithUidInternal(id, uid)
-	if err != nil {
-		return err
-	}
+func delete(ctx *gin.Context) error {
+	breed := ctx.MustGet("breed").(*Breed)
 
 	return db.DB.Delete(breed).Error
 }
@@ -86,11 +80,8 @@ func getCount(c *gin.Context) int64 {
 }
 
 // updateNetValue 更新净值
-func updateNetValue(uid, id uint, netValue float64) (*BreedDto, error) {
-	breed, err := getByIdWithUidInternal(id, uid)
-	if err != nil {
-		return nil, err
-	}
+func updateNetValue(ctx *gin.Context, netValue float64) (*BreedDto, error) {
+	breed := ctx.MustGet("breed").(*Breed)
 
 	breed.NetValue = netValue
 	breed.TotalNetValue = float64(breed.TotalCount) * netValue

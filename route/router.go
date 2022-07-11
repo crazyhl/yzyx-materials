@@ -37,10 +37,13 @@ func InitRouter(router *gin.Engine) {
 		b := authorized.Group("/breed")
 		{
 			b.POST("/add", breed.Add)
-			b.PUT("/:id", breed.Edit)
-			b.PUT("/:id/netValue", breed.UpdateNetValue)
-			b.DELETE("/:id", breed.Delete)
 			b.GET("/list", breed.List)
+			b.Use(breed.CheckBreedUid)
+			{
+				b.PUT("/:id", breed.Edit)
+				b.PUT("/:id/netValue", breed.UpdateNetValue)
+				b.DELETE("/:id", breed.Delete)
+			}
 		}
 	}
 }
