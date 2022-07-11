@@ -121,3 +121,28 @@ func Edit(ctx *gin.Context) {
 		"data":    accountDto,
 	})
 }
+
+func Detail(c *gin.Context) {
+	id, err := params.GetUInt(c, "id")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+		return
+	}
+	account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "获取账户成功",
+		"data":    account.ToDto(),
+	})
+}
