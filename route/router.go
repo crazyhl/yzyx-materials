@@ -26,9 +26,12 @@ func InitRouter(router *gin.Engine) {
 		{
 			acc.POST("/add", account.Add)
 			acc.GET("/list", account.List)
-			acc.GET("/:id", account.Detail)
-			acc.DELETE("/delete/:id", account.Delete)
-			acc.PUT("/update/:id", account.Edit)
+			acc.Use(account.CheckAccountUid())
+			{
+				acc.GET("/:id", account.Detail)
+				acc.DELETE("/delete/:id", account.Delete)
+				acc.PUT("/update/:id", account.Edit)
+			}
 		}
 
 		b := authorized.Group("/breed")

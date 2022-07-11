@@ -44,20 +44,14 @@ func getCount(c *gin.Context) int64 {
 }
 
 // delete 删除账户
-func delete(c *gin.Context, id uint) error {
-	account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
-	if err != nil {
-		return err
-	}
+func delete(c *gin.Context) error {
+	account := c.MustGet("account").(*Account)
 
 	return db.DB.Delete(account).Error
 }
 
-func edit(c *gin.Context, id uint, form accountEditForm) (*AccountDto, error) {
-	account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
-	if err != nil {
-		return nil, err
-	}
+func edit(c *gin.Context, form accountEditForm) (*AccountDto, error) {
+	account := c.MustGet("account").(*Account)
 
 	if form.Name != "" {
 		account.Name = form.Name

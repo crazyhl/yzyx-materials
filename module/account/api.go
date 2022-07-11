@@ -3,7 +3,6 @@ package account
 import (
 	"net/http"
 
-	"github.com/crazyhl/yzyx-materials/internal/params"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 )
@@ -57,16 +56,7 @@ func List(c *gin.Context) {
 }
 
 func Delete(ctx *gin.Context) {
-	id, err := params.GetUInt(ctx, "id")
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code":    http.StatusBadRequest,
-			"message": "err: " + err.Error(),
-		})
-		return
-	}
-
-	err = delete(ctx, id)
+	err := delete(ctx)
 
 	if err != nil {
 		ctx.JSON(400, gin.H{
@@ -91,14 +81,6 @@ type accountEditForm struct {
 }
 
 func Edit(ctx *gin.Context) {
-	id, err := params.GetUInt(ctx, "id")
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"code":    http.StatusBadRequest,
-			"message": "err: " + err.Error(),
-		})
-		return
-	}
 	var accEditForm accountEditForm
 	if err := ctx.ShouldBind(&accEditForm); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -107,7 +89,7 @@ func Edit(ctx *gin.Context) {
 		})
 		return
 	}
-	accountDto, err := edit(ctx, id, accEditForm)
+	accountDto, err := edit(ctx, accEditForm)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"code":    http.StatusInternalServerError,
@@ -123,22 +105,7 @@ func Edit(ctx *gin.Context) {
 }
 
 func Detail(c *gin.Context) {
-	id, err := params.GetUInt(c, "id")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    http.StatusBadRequest,
-			"message": "err: " + err.Error(),
-		})
-		return
-	}
-	account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code":    http.StatusBadRequest,
-			"message": "err: " + err.Error(),
-		})
-		return
-	}
+	account := c.MustGet("account").(*Account)
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
