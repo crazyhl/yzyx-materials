@@ -109,7 +109,7 @@ func Edit(ctx *gin.Context) {
 func Detail(c *gin.Context) {
 	account := c.MustGet("account").(*Account)
 	breeds := make([]*breed.Breed, 0)
-	db.DB.Model(account).Select("id, code, name").Association("Breeds").Find(&breeds)
+	db.DB.Model(account).Association("Breeds").Find(&breeds)
 	account.Breeds = breeds
 
 	c.JSON(http.StatusOK, gin.H{
