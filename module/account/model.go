@@ -23,6 +23,11 @@ type Account struct {
 }
 
 func (a Account) ToDto() *AccountDto {
+	breedDtos := make([]*breed.BreedDto, 0)
+	for _, breed := range a.Breeds {
+		breedDtos = append(breedDtos, breed.ToDto())
+	}
+
 	return &AccountDto{
 		Dto: model.Dto{
 			ID:        a.ID,
@@ -37,5 +42,6 @@ func (a Account) ToDto() *AccountDto {
 		PerPart:            a.PerPartMoney,
 		RateOfReturn:       a.RateOfReturn,
 		ProfitAmount:       a.ProfitAmount,
+		Breeds:             breedDtos,
 	}
 }

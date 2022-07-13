@@ -75,8 +75,8 @@ func main() {
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{viper.GetString("CORS_HOST")},
-		AllowMethods:     []string{"PUT", "GET", "POST", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Authorization"},
+		AllowMethods:     []string{"PUT", "GET", "POST", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,

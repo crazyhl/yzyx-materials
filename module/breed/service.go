@@ -97,7 +97,7 @@ func updateNetValue(ctx *gin.Context, netValue float64) (*BreedDto, error) {
 }
 
 // getByIdInternal 获取账户
-func getByIdInternal(id uint) (*Breed, error) {
+func GetByIdInternal(id uint) (*Breed, error) {
 	breed := &Breed{}
 	if err := db.DB.First(breed, id).Error; err != nil {
 		return nil, ErrBreedNotFound
@@ -107,8 +107,8 @@ func getByIdInternal(id uint) (*Breed, error) {
 }
 
 // getByIdWithUidInternal 获取账户并校验 uid
-func getByIdWithUidInternal(id uint, uid uint) (*Breed, error) {
-	breed, err := getByIdInternal(id)
+func GetByIdWithUidInternal(id uint, uid uint) (*Breed, error) {
+	breed, err := GetByIdInternal(id)
 	if err != nil {
 		return nil, err
 	}

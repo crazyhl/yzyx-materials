@@ -3,6 +3,8 @@ package account
 import (
 	"net/http"
 
+	"github.com/crazyhl/yzyx-materials/internal/db"
+	"github.com/crazyhl/yzyx-materials/module/breed"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 )
@@ -106,10 +108,32 @@ func Edit(ctx *gin.Context) {
 
 func Detail(c *gin.Context) {
 	account := c.MustGet("account").(*Account)
+	breeds := make([]*breed.Breed, 0)
+	db.DB.Model(account).Select("id, code, name").Association("Breeds").Find(&breeds)
+	account.Breeds = breeds
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":    http.StatusOK,
 		"message": "获取账户成功",
 		"data":    account.ToDto(),
 	})
+}
+
+// BindBreed 绑定品种
+func BindBreed(ctx *gin.Context) {
+	// 此处通过校验中间件已经可以成功获取到 account 了
+	// 然后就使用 form 接收 breed id 进行校验就可以了
+	breedDto, err := bindBreed(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    http.StatusOK,
+			"message": "绑定品种成功",
+			"data":    breedDto,
+		})
+	}
 }

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/crazyhl/yzyx-materials/internal/db"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 )
@@ -136,5 +137,21 @@ func UpdateNetValue(ctx *gin.Context) {
 		"code":    http.StatusOK,
 		"message": "更新净值成功",
 		"data":    breedDto,
+	})
+}
+
+// AllList 全部列表，返回简单数据，只有 id code name
+func AllList(ctx *gin.Context) {
+	breeds := []*Breed{}
+	breedDtos := []*BreedDto{}
+	query := db.DB.Select([]string{"id", "code", "name"}).Where("user_id = ?", ctx.MustGet("user").(user.User).ID).Order("id desc")
+	query.Find(&breeds)
+	for _, breed := range breeds {
+		breedDtos = append(breedDtos, breed.ToDto())
+	}
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "获取全部列表成功",
+		"data":    breedDtos,
 	})
 }

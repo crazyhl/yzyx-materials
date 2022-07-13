@@ -17,6 +17,7 @@ func CheckAccountUid() gin.HandlerFunc {
 				"code":    http.StatusBadRequest,
 				"message": "err: " + err.Error(),
 			})
+			return
 		}
 		account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
 

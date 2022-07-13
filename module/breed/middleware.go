@@ -15,8 +15,9 @@ func CheckBreedUid(ctx *gin.Context) {
 			"code":    http.StatusBadRequest,
 			"message": "err: " + err.Error(),
 		})
+		return
 	}
-	breed, err := getByIdWithUidInternal(id, ctx.MustGet("user").(user.User).ID)
+	breed, err := GetByIdWithUidInternal(id, ctx.MustGet("user").(user.User).ID)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"code":    http.StatusBadRequest,

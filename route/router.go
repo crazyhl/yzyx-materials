@@ -24,11 +24,12 @@ func InitRouter(router *gin.Engine) {
 		// account 接口
 		acc := authorized.Group("/account")
 		{
-			acc.POST("/add", account.Add)
 			acc.GET("/list", account.List)
+			acc.POST("/add", account.Add)
 			acc.Use(account.CheckAccountUid())
 			{
 				acc.GET("/:id", account.Detail)
+				acc.POST("/:id/bindBreed", account.BindBreed)
 				acc.DELETE("/delete/:id", account.Delete)
 				acc.PUT("/update/:id", account.Edit)
 			}
@@ -38,6 +39,7 @@ func InitRouter(router *gin.Engine) {
 		{
 			b.POST("/add", breed.Add)
 			b.GET("/list", breed.List)
+			b.GET("/allList", breed.AllList)
 			b.Use(breed.CheckBreedUid)
 			{
 				b.PUT("/:id", breed.Edit)

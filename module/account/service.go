@@ -2,6 +2,7 @@ package account
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/db"
+	"github.com/crazyhl/yzyx-materials/module/breed"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 )
@@ -98,4 +99,27 @@ func GetByIdWithUidInternal(id uint, uid uint) (*Account, error) {
 	}
 
 	return account, nil
+}
+
+type accountBindBreedForm struct {
+	Id uint `form:"id" json:"id" binding:"required" label:"品种id"`
+}
+
+func bindBreed(ctx *gin.Context) (*breed.BreedDto, error) {
+	var form accountBindBreedForm
+	if err := ctx.ShouldBind(&form); err != nil {
+		return nil, err
+	}
+	breedId := form.Id
+	b, err := breed.GetByIdWithUidInternal(breedId, ctx.MustGet("user").(user.User).ID)
+	if err != nil {
+		return nil, err
+	}
+	// 得到breed 后就可以进行绑定了
+	account := ctx.MustGet("account").(*Account)
+	if err := db.DB.Model(account).Association("Breeds").Append([]*breed.Breed{b}); err != nil {
+		return nil, err
+	}
+
+	return b.ToDto(), nil
 }
