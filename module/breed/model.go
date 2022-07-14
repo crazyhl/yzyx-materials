@@ -12,8 +12,8 @@ type Breed struct {
 	User          user.User // 账户所属用户，外键
 	Code          string    `gorm:"type:varchar(32);not null;uniqueIndex: uk_uid_code;"` // 编码
 	Name          string    `gorm:"type:varchar(32);not null;"`                          // 名称
-	NetValue      float64   `gorm:"type:decimal(20,4);not null"`                         // 净值
-	Cost          float64   `gorm:"type:decimal(20,4);not null"`                         // 成本
+	NetValue      float64   `gorm:"type:decimal(20,4);not null;default:0;"`              // 净值
+	Cost          float64   `gorm:"type:decimal(20,4);not null;default:0;"`              // 成本
 	TotalCount    int64     `gorm:"not null;default:0;"`                                 // 总份数
 	TotalCost     float64   `gorm:"type:decimal(20,4);not null; default:0;"`             // 总成本
 	TotalNetValue float64   `gorm:"type:decimal(20,4);not null; default:0"`              // 总净值

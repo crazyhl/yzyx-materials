@@ -2,9 +2,11 @@ package account
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/db"
+	"github.com/crazyhl/yzyx-materials/internal/model"
 	"github.com/crazyhl/yzyx-materials/module/breed"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-module/carbon/v2"
 )
 
 // addAccount 添加账户
@@ -105,7 +107,7 @@ type accountBindBreedForm struct {
 	Id uint `form:"id" json:"id" binding:"required" label:"品种id"`
 }
 
-func bindBreed(ctx *gin.Context) (*breed.BreedDto, error) {
+func bindBreed(ctx *gin.Context) (*AccountBreedDto, error) {
 	var form accountBindBreedForm
 	if err := ctx.ShouldBind(&form); err != nil {
 		return nil, err
@@ -115,11 +117,20 @@ func bindBreed(ctx *gin.Context) (*breed.BreedDto, error) {
 	if err != nil {
 		return nil, err
 	}
+	accountBreed := AccountBreed{
+		Account: *ctx.MustGet("account").(*Account),
+		Breed:   *b,
+		BreedId: b.ID,
+		Model: model.Model{
+			CreatedAt: carbon.Now().Timestamp(),
+			UpdatedAt: carbon.Now().Timestamp(),
+		},
+	}
 	// 得到breed 后就可以进行绑定了
 	account := ctx.MustGet("account").(*Account)
-	if err := db.DB.Model(account).Association("Breeds").Append([]*breed.Breed{b}); err != nil {
+	if err := db.DB.Model(account).Association("Breeds").Append([]AccountBreed{accountBreed}); err != nil {
 		return nil, err
 	}
 
-	return b.ToDto(), nil
+	return accountBreed.ToDto(), nil
 }

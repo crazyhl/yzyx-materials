@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/crazyhl/yzyx-materials/internal/db"
-	"github.com/crazyhl/yzyx-materials/module/breed"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm/clause"
 )
 
 type accountAddForm struct {
@@ -108,8 +108,8 @@ func Edit(ctx *gin.Context) {
 
 func Detail(c *gin.Context) {
 	account := c.MustGet("account").(*Account)
-	breeds := make([]*breed.Breed, 0)
-	db.DB.Model(account).Association("Breeds").Find(&breeds)
+	breeds := make([]*AccountBreed, 0)
+	db.DB.Preload(clause.Associations).Find(&breeds)
 	account.Breeds = breeds
 
 	c.JSON(http.StatusOK, gin.H{
