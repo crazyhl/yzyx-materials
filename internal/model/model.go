@@ -12,6 +12,6 @@ type Model struct {
 
 type Dto struct {
 	ID        uint  `json:"id"`
-	CreatedAt int64 `json:"create_at,omitempty"`
-	UpdatedAt int64 `json:"update_at,omitempty"`
+	CreatedAt int64 `json:"create_at"`
+	UpdatedAt int64 `json:"update_at"`
 }

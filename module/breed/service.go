@@ -1,6 +1,8 @@
 package breed
 
 import (
+	"fmt"
+
 	"github.com/crazyhl/yzyx-materials/internal/db"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
@@ -68,6 +70,7 @@ func list(c *gin.Context) []*BreedDto {
 	}
 	query.Find(&breeds)
 	for _, breed := range breeds {
+		fmt.Print("%+v", breed)
 		breedDtos = append(breedDtos, breed.ToDto())
 	}
 	return breedDtos
