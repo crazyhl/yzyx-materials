@@ -7,6 +7,7 @@ import (
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon/v2"
+	"gorm.io/gorm/clause"
 )
 
 // addAccount 添加账户
@@ -137,11 +138,61 @@ func bindBreed(ctx *gin.Context) (*AccountBreedDto, error) {
 
 type accountAddBreedBuyItemForm struct {
 	Id       uint    `form:"id" json:"id" binding:"required" label:"品种id"`
-	CreateAt int64   `form:"create_at" json:"create_it" binding:"required" label:"买入时间"`
+	CreateAt int64   `form:"create_at" json:"create_at" binding:"required" label:"买入时间"`
 	Cost     float64 `form:"cost" json:"cost" binding:"required" label:"购买单价"`
 	Count    int64   `form:"count" json:"count" binding:"required" label:"购买份数"`
 }
 
+type AccountBreedStatisticsResult struct {
+	TotalCount int64
+	TotalCost  float64
+}
+
+// 账户添加购买记录
 func addBreedBuytItem(ctx *gin.Context) (*AccountBreedDto, error) {
-	return nil, nil
+	var form accountAddBreedBuyItemForm
+	if err := ctx.ShouldBind(&form); err != nil {
+		return nil, err
+	}
+	breedId := form.Id
+	b, err := breed.GetByIdWithUidInternal(breedId, ctx.MustGet("user").(user.User).ID)
+	if err != nil {
+		return nil, err
+	}
+	buyItem := BuyBreedItem{
+		Account: *ctx.MustGet("account").(*Account),
+		Breed:   *b,
+		Model: model.Model{
+			CreatedAt: form.CreateAt,
+		},
+		Cost:      form.Cost,
+		Count:     form.Count,
+		TotalCost: form.Cost * float64(form.Count),
+	}
+	if err := db.DB.Create(&buyItem).Error; err != nil {
+		return nil, err
+	}
+	// 添加成功后，更新 Breed, AccountBreed,以及 Account 三个表的数据
+	// 获取 accountBreed
+	breed := AccountBreed{}
+	db.DB.Preload(clause.Associations).Where("account_id = ?", buyItem.Account.ID).Where("breed_id = ?", buyItem.Breed.ID).First(&breed)
+	// 根据accountId 和 breedId 进行数据统计 更新 account_breed
+	accountBreedStatisticsResult := AccountBreedStatisticsResult{}
+	db.DB.Model(&BuyBreedItem{}).Where("account_id = ?", buyItem.Account.ID).Where("breed_id = ?", buyItem.Breed.ID).Select("sum(count) as total_count, sum(total_cost) as total_cost").First(&accountBreedStatisticsResult)
+	breed.TotalCost = accountBreedStatisticsResult.TotalCost
+	breed.TotalCount = accountBreedStatisticsResult.TotalCount
+	breed.Cost = accountBreedStatisticsResult.TotalCost / float64(accountBreedStatisticsResult.TotalCount)
+	if breed.Account.PerPartMoney > 0 {
+		breed.TotalAccountPerPartCount = accountBreedStatisticsResult.TotalCost / float64(breed.Account.PerPartMoney)
+	}
+	db.DB.Save(&breed)
+	// 根据 breed 进行统计 更新 breed
+	db.DB.Model(&BuyBreedItem{}).Where("breed_id = ?", buyItem.Breed.ID).Select("sum(count) as total_count, sum(total_cost) as total_cost").First(&accountBreedStatisticsResult)
+	b.TotalCost = accountBreedStatisticsResult.TotalCost
+	b.TotalCount = accountBreedStatisticsResult.TotalCount
+	b.Cost = accountBreedStatisticsResult.TotalCost / float64(accountBreedStatisticsResult.TotalCount)
+	db.DB.Save(b)
+	// 根据 account 进行统计，更新 account
+	db.DB.Preload(clause.Associations).Where("account_id = ?", buyItem.Account.ID).Where("breed_id = ?", buyItem.Breed.ID).First(&breed)
+	return (&breed).ToDto(), nil
 }

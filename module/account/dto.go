@@ -24,6 +24,5 @@ type AccountBreedDto struct {
 	Cost                     float64        `json:"cost"`                         // 成本
 	TotalCount               int64          `json:"total_count"`                  // 总份数
 	TotalCost                float64        `json:"total_cost"`                   // 总成本
-	TotalNetValue            float64        `json:"total_net_value"`              // 总净值
 	TotalAccountPerPartCount float64        `json:"total_account_per_part_count"` // 对应账户设置的每份金额所转化后的份数
 }

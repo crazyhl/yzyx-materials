@@ -60,7 +60,7 @@ type AccountBreed struct {
 	// 上面三个字段跟品种区别的就是这几个统计只属于该账户品种的
 }
 
-func (b AccountBreed) ToDto() *AccountBreedDto {
+func (b *AccountBreed) ToDto() *AccountBreedDto {
 	return &AccountBreedDto{
 		Dto: model.Dto{
 			ID:        b.ID,
