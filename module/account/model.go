@@ -22,47 +22,6 @@ type Account struct {
 	Breeds             []*AccountBreed
 }
 
-// AccountBreed 账户品种模型
-type AccountBreed struct {
-	model.Model
-	AccountId                uint        `gorm:"not null"`
-	Account                  Account     // 账户品种所属的账户
-	BreedId                  uint        `gorm:"not null"`
-	Breed                    breed.Breed // 账户品种所属的品种
-	TotalAccountPerPartCount float64     `gorm:"type:decimal(20,4);not null;default:0;"`  // 对应账户设置每份金额计算出来的总份数
-	Cost                     float64     `gorm:"type:decimal(20,4);not null;default:0;"`  // 成本
-	TotalCount               int64       `gorm:"not null;default:0;"`                     // 总份数
-	TotalCost                float64     `gorm:"type:decimal(20,4);not null; default:0;"` // 总成本
-	// 上面三个字段跟品种区别的就是这几个统计只属于该账户品种的
-}
-
-// 账户购买品种记录
-type BuyBreedItem struct {
-	model.Model
-	AccountId  uint `gorm:"not null;"`
-	Account    Account
-	BreedId    uint `gorm:"not null;"`
-	Breed      breed.Breed
-	Cost       float64 `gorm:"decimal(20,4);not null;default:0;"` // 成本
-	TotalCount int64   `gorm:"not null;default:0"`                // 购买份数，如果是卖出则是负数
-	TotalCost  float64 `gorm:"decimal(20,4);not null;default:0;"` // 总成本
-}
-
-func (b AccountBreed) ToDto() *AccountBreedDto {
-	return &AccountBreedDto{
-		Dto: model.Dto{
-			ID:        b.ID,
-			CreatedAt: b.CreatedAt,
-			UpdatedAt: b.UpdatedAt,
-		},
-		Breed:                    *b.Breed.ToDto(),
-		Cost:                     b.Cost,
-		TotalCount:               b.TotalCount,
-		TotalCost:                b.TotalCost,
-		TotalAccountPerPartCount: b.TotalAccountPerPartCount,
-	}
-}
-
 func (a Account) ToDto() *AccountDto {
 	breedDtos := make([]*AccountBreedDto, 0)
 	for _, breed := range a.Breeds {
@@ -85,4 +44,45 @@ func (a Account) ToDto() *AccountDto {
 		ProfitAmount:       a.ProfitAmount,
 		Breeds:             breedDtos,
 	}
+}
+
+// AccountBreed 账户品种模型
+type AccountBreed struct {
+	model.Model
+	AccountId                uint        `gorm:"not null"`
+	Account                  Account     // 账户品种所属的账户
+	BreedId                  uint        `gorm:"not null"`
+	Breed                    breed.Breed // 账户品种所属的品种
+	TotalAccountPerPartCount float64     `gorm:"type:decimal(20,4);not null;default:0;"`  // 对应账户设置每份金额计算出来的总份数
+	Cost                     float64     `gorm:"type:decimal(20,4);not null;default:0;"`  // 成本
+	TotalCount               int64       `gorm:"not null;default:0;"`                     // 总份数
+	TotalCost                float64     `gorm:"type:decimal(20,4);not null; default:0;"` // 总成本
+	// 上面三个字段跟品种区别的就是这几个统计只属于该账户品种的
+}
+
+func (b AccountBreed) ToDto() *AccountBreedDto {
+	return &AccountBreedDto{
+		Dto: model.Dto{
+			ID:        b.ID,
+			CreatedAt: b.CreatedAt,
+			UpdatedAt: b.UpdatedAt,
+		},
+		Breed:                    *b.Breed.ToDto(),
+		Cost:                     b.Cost,
+		TotalCount:               b.TotalCount,
+		TotalCost:                b.TotalCost,
+		TotalAccountPerPartCount: b.TotalAccountPerPartCount,
+	}
+}
+
+// 账户购买品种记录
+type BuyBreedItem struct {
+	model.Model
+	AccountId  uint `gorm:"not null;"`
+	Account    Account
+	BreedId    uint `gorm:"not null;"`
+	Breed      breed.Breed
+	Cost       float64 `gorm:"decimal(20,4);not null;default:0;"` // 成本
+	TotalCount int64   `gorm:"not null;default:0"`                // 购买份数，如果是卖出则是负数
+	TotalCost  float64 `gorm:"decimal(20,4);not null;default:0;"` // 总成本
 }
