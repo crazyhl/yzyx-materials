@@ -67,6 +67,7 @@ func (b *AccountBreed) ToDto() *AccountBreedDto {
 			CreatedAt: b.CreatedAt,
 			UpdatedAt: b.UpdatedAt,
 		},
+		Account:                  *b.Account.ToDto(),
 		Breed:                    *b.Breed.ToDto(),
 		Cost:                     b.Cost,
 		TotalCount:               b.TotalCount,

@@ -157,8 +157,9 @@ func addBreedBuytItem(ctx *gin.Context) (*AccountBreedDto, error) {
 	if err != nil {
 		return nil, err
 	}
+	account := ctx.MustGet("account").(*Account)
 	buyItem := BuyBreedItem{
-		Account: *ctx.MustGet("account").(*Account),
+		Account: *account,
 		Breed:   *b,
 		Model: model.Model{
 			CreatedAt: form.CreateAt,
@@ -191,6 +192,19 @@ func addBreedBuytItem(ctx *gin.Context) (*AccountBreedDto, error) {
 	b.Cost = accountBreedStatisticsResult.TotalCost / float64(accountBreedStatisticsResult.TotalCount)
 	db.DB.Save(b)
 	// 根据 account 进行统计，更新 account
+	allAccount := &Account{}
+	db.DB.Preload(clause.Associations).First(allAccount, account.ID)
+	totalCost := float64(0)
+	totalProfit := float64(0)
+	for _, b := range allAccount.Breeds {
+		totalCost += b.TotalCost //  加入每个账户的总投入
+		// 计算利润 品种的总市值 - 品种总投入
+		totalProfit += b.Breed.NetValue*float64(b.TotalCount) - b.TotalCost
+	}
+	allAccount.TotalMoney = totalCost
+	allAccount.ProfitAmount = totalProfit
+	allAccount.RateOfReturn = totalProfit / totalCost * 100
+	db.DB.Save(allAccount)
 	db.DB.Preload(clause.Associations).Where("account_id = ?", buyItem.Account.ID).Where("breed_id = ?", buyItem.Breed.ID).First(&breed)
 	return (&breed).ToDto(), nil
 }

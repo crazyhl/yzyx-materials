@@ -20,6 +20,7 @@ type AccountDto struct {
 
 type AccountBreedDto struct {
 	model.Dto
+	Account                  AccountDto     `json:"account"`
 	Breed                    breed.BreedDto `json:"breed"`                        // 账户品种所属的品种
 	Cost                     float64        `json:"cost"`                         // 成本
 	TotalCount               int64          `json:"total_count"`                  // 总份数
