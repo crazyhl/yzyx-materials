@@ -133,6 +133,10 @@ func bindBreed(ctx *gin.Context) (*AccountBreedDto, error) {
 		return nil, err
 	}
 
+	db.DB.Model(&AccountBreed{}).Preload(clause.Associations).
+		Where("account_id = ?", accountBreed.Account.ID).
+		Where("breed_id = ?", b.ID).First(&accountBreed)
+
 	return accountBreed.ToDto(), nil
 }
 
