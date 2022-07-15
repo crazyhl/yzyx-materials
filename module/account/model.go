@@ -33,8 +33,7 @@ type AccountBreed struct {
 	Cost                     float64     `gorm:"type:decimal(20,4);not null;default:0;"`  // 成本
 	TotalCount               int64       `gorm:"not null;default:0;"`                     // 总份数
 	TotalCost                float64     `gorm:"type:decimal(20,4);not null; default:0;"` // 总成本
-	TotalNetValue            float64     `gorm:"type:decimal(20,4);not null; default:0"`  // 总市值
-	// 上面四个字段跟品种区别的就是这几个统计只属于该账户品种的
+	// 上面三个字段跟品种区别的就是这几个统计只属于该账户品种的
 }
 
 func (b AccountBreed) ToDto() *AccountBreedDto {
@@ -48,7 +47,6 @@ func (b AccountBreed) ToDto() *AccountBreedDto {
 		Cost:                     b.Cost,
 		TotalCount:               b.TotalCount,
 		TotalCost:                b.TotalCost,
-		TotalNetValue:            b.TotalNetValue,
 		TotalAccountPerPartCount: b.TotalAccountPerPartCount,
 	}
 }
