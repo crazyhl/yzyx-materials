@@ -137,3 +137,19 @@ func BindBreed(ctx *gin.Context) {
 		})
 	}
 }
+
+func AddBreedBuytItem(ctx *gin.Context) {
+	breedDto, err := addBreedBuytItem(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    http.StatusOK,
+			"message": "添加购买记录成功",
+			"data":    breedDto,
+		})
+	}
+}

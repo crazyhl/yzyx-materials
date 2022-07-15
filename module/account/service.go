@@ -134,3 +134,14 @@ func bindBreed(ctx *gin.Context) (*AccountBreedDto, error) {
 
 	return accountBreed.ToDto(), nil
 }
+
+type accountAddBreedBuyItemForm struct {
+	Id       uint    `form:"id" json:"id" binding:"required" label:"品种id"`
+	CreateAt int64   `form:"create_at" json:"create_it" binding:"required" label:"买入时间"`
+	Cost     float64 `form:"cost" json:"cost" binding:"required" label:"购买单价"`
+	Count    int64   `form:"count" json:"count" binding:"required" label:"购买份数"`
+}
+
+func addBreedBuytItem(ctx *gin.Context) (*AccountBreedDto, error) {
+	return nil, nil
+}

@@ -30,6 +30,7 @@ func InitRouter(router *gin.Engine) {
 			{
 				acc.GET("/:id", account.Detail)
 				acc.POST("/:id/bindBreed", account.BindBreed)
+				acc.POST("/:id/addBreedBuyItem", account.AddBreedBuytItem)
 				acc.DELETE("/delete/:id", account.Delete)
 				acc.PUT("/update/:id", account.Edit)
 			}

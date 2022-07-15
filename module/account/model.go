@@ -78,11 +78,11 @@ func (b AccountBreed) ToDto() *AccountBreedDto {
 // 账户购买品种记录
 type BuyBreedItem struct {
 	model.Model
-	AccountId  uint `gorm:"not null;"`
-	Account    Account
-	BreedId    uint `gorm:"not null;"`
-	Breed      breed.Breed
-	Cost       float64 `gorm:"decimal(20,4);not null;default:0;"` // 成本
-	TotalCount int64   `gorm:"not null;default:0"`                // 购买份数，如果是卖出则是负数
-	TotalCost  float64 `gorm:"decimal(20,4);not null;default:0;"` // 总成本
+	AccountId uint `gorm:"not null;"`
+	Account   Account
+	BreedId   uint `gorm:"not null;"`
+	Breed     breed.Breed
+	Cost      float64 `gorm:"decimal(20,4);not null;default:0;"` // 成本
+	Count     int64   `gorm:"not null;default:0"`                // 购买份数，如果是卖出则是负数
+	TotalCost float64 `gorm:"decimal(20,4);not null;default:0;"` // 总成本
 }
