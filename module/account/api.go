@@ -109,7 +109,7 @@ func Edit(ctx *gin.Context) {
 func Detail(c *gin.Context) {
 	account := c.MustGet("account").(*Account)
 	breeds := make([]*AccountBreed, 0)
-	db.DB.Preload(clause.Associations).Find(&breeds)
+	db.DB.Preload(clause.Associations).Order("updated_at desc").Find(&breeds)
 	account.Breeds = breeds
 
 	c.JSON(http.StatusOK, gin.H{
