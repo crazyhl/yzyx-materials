@@ -121,21 +121,15 @@ func bindBreed(ctx *gin.Context) (*AccountBreedDto, error) {
 	accountBreed := AccountBreed{
 		Account: *ctx.MustGet("account").(*Account),
 		Breed:   *b,
-		BreedId: b.ID,
 		Model: model.Model{
 			CreatedAt: carbon.Now().Timestamp(),
 			UpdatedAt: carbon.Now().Timestamp(),
 		},
 	}
 	// 得到breed 后就可以进行绑定了
-	account := ctx.MustGet("account").(*Account)
-	if err := db.DB.Model(account).Association("Breeds").Append([]AccountBreed{accountBreed}); err != nil {
+	if err := db.DB.Create(&accountBreed).Error; err != nil {
 		return nil, err
 	}
-
-	db.DB.Model(&AccountBreed{}).Preload(clause.Associations).
-		Where("account_id = ?", accountBreed.Account.ID).
-		Where("breed_id = ?", b.ID).First(&accountBreed)
 
 	return accountBreed.ToDto(), nil
 }
