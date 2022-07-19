@@ -107,8 +107,8 @@ func Edit(ctx *gin.Context) {
 }
 
 func Detail(c *gin.Context) {
-	account := c.MustGet("account").(*Account)
-	breeds := make([]*AccountBreed, 0)
+	account := c.MustGet("account").(*models.Account)
+	breeds := make([]*models.AccountBreed, 0)
 	db.DB.Preload(clause.Associations).Where("account_id = ?", account.ID).Order("updated_at desc").Find(&breeds)
 	account.Breeds = breeds
 

@@ -9,7 +9,6 @@ import (
 
 	"github.com/crazyhl/yzyx-materials/internal/db"
 	_ "github.com/crazyhl/yzyx-materials/internal/validator"
-	"github.com/crazyhl/yzyx-materials/module/account"
 	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/crazyhl/yzyx-materials/route"
 	"github.com/gin-contrib/cors"
@@ -63,7 +62,6 @@ func init() {
 	initLogger()
 	initViper()
 	db.InitDb()
-	account.AutoMigrate()
 	models.AutoMigrate()
 }
 

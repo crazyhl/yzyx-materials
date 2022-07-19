@@ -4,6 +4,7 @@ import (
 	"github.com/crazyhl/yzyx-materials/internal/db"
 	"github.com/crazyhl/yzyx-materials/internal/model"
 	"github.com/crazyhl/yzyx-materials/module/breed"
+	"github.com/crazyhl/yzyx-materials/module/domain/dtos"
 	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon/v2"
@@ -11,8 +12,8 @@ import (
 )
 
 // addAccount 添加账户
-func add(form accountAddForm) (*AccountDto, error) {
-	account := &Account{
+func add(form accountAddForm) (*dtos.AccountDto, error) {
+	account := &models.Account{
 		Name:               form.Name,
 		Description:        form.Description,
 		User:               form.User,
@@ -31,9 +32,9 @@ func add(form accountAddForm) (*AccountDto, error) {
 }
 
 // listAccounts 获取账户列表
-func list(c *gin.Context) []*AccountDto {
-	accounts := []*Account{}
-	accountDtos := []*AccountDto{}
+func list(c *gin.Context) []*dtos.AccountDto {
+	accounts := []*models.Account{}
+	accountDtos := []*dtos.AccountDto{}
 	db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(models.User).ID).Order("id desc").Find(&accounts)
 	for _, account := range accounts {
 		accountDtos = append(accountDtos, account.ToDto())
@@ -43,19 +44,19 @@ func list(c *gin.Context) []*AccountDto {
 
 func getCount(c *gin.Context) int64 {
 	count := int64(0)
-	db.DB.Model(&Account{}).Where("user_id = ?", c.MustGet("user").(models.User).ID).Count(&count)
+	db.DB.Model(&models.Account{}).Where("user_id = ?", c.MustGet("user").(models.User).ID).Count(&count)
 	return count
 }
 
 // delete 删除账户
 func delete(c *gin.Context) error {
-	account := c.MustGet("account").(*Account)
+	account := c.MustGet("account").(*models.Account)
 
 	return db.DB.Delete(account).Error
 }
 
-func edit(c *gin.Context, form accountEditForm) (*AccountDto, error) {
-	account := c.MustGet("account").(*Account)
+func edit(c *gin.Context, form accountEditForm) (*dtos.AccountDto, error) {
+	account := c.MustGet("account").(*models.Account)
 
 	if form.Name != "" {
 		account.Name = form.Name
@@ -83,8 +84,8 @@ func edit(c *gin.Context, form accountEditForm) (*AccountDto, error) {
 	return accountDto, nil
 }
 
-func GetByIdInternal(id uint) (*Account, error) {
-	account := &Account{}
+func GetByIdInternal(id uint) (*models.Account, error) {
+	account := &models.Account{}
 	if err := db.DB.First(account, id).Error; err != nil {
 		return nil, ErrAccountNotFound
 	}
@@ -92,7 +93,7 @@ func GetByIdInternal(id uint) (*Account, error) {
 	return account, nil
 }
 
-func GetByIdWithUidInternal(id uint, uid uint) (*Account, error) {
+func GetByIdWithUidInternal(id uint, uid uint) (*models.Account, error) {
 	account, err := GetByIdInternal(id)
 	if err != nil {
 		return nil, err
@@ -108,7 +109,7 @@ type accountBindBreedForm struct {
 	Id uint `form:"id" json:"id" binding:"required" label:"品种id"`
 }
 
-func bindBreed(ctx *gin.Context) (*AccountBreedDto, error) {
+func bindBreed(ctx *gin.Context) (*dtos.AccountBreedDto, error) {
 	var form accountBindBreedForm
 	if err := ctx.ShouldBind(&form); err != nil {
 		return nil, err
@@ -118,8 +119,8 @@ func bindBreed(ctx *gin.Context) (*AccountBreedDto, error) {
 	if err != nil {
 		return nil, err
 	}
-	accountBreed := AccountBreed{
-		Account: *ctx.MustGet("account").(*Account),
+	accountBreed := models.AccountBreed{
+		Account: *ctx.MustGet("account").(*models.Account),
 		Breed:   *b,
 		Model: model.Model{
 			CreatedAt: carbon.Now().Timestamp(),
@@ -147,7 +148,7 @@ type AccountBreedStatisticsResult struct {
 }
 
 // 账户添加购买记录
-func addBreedBuytItem(ctx *gin.Context) (*AccountBreedDto, error) {
+func addBreedBuytItem(ctx *gin.Context) (*dtos.AccountBreedDto, error) {
 	var form accountAddBreedBuyItemForm
 	if err := ctx.ShouldBind(&form); err != nil {
 		return nil, err
@@ -157,8 +158,8 @@ func addBreedBuytItem(ctx *gin.Context) (*AccountBreedDto, error) {
 	if err != nil {
 		return nil, err
 	}
-	account := ctx.MustGet("account").(*Account)
-	buyItem := BuyBreedItem{
+	account := ctx.MustGet("account").(*models.Account)
+	buyItem := models.BuyBreedItem{
 		Account: *account,
 		Breed:   *b,
 		Model: model.Model{
@@ -173,11 +174,11 @@ func addBreedBuytItem(ctx *gin.Context) (*AccountBreedDto, error) {
 	}
 	// 添加成功后，更新 Breed, AccountBreed,以及 Account 三个表的数据
 	// 获取 accountBreed
-	breed := AccountBreed{}
+	breed := models.AccountBreed{}
 	db.DB.Preload(clause.Associations).Where("account_id = ?", buyItem.Account.ID).Where("breed_id = ?", buyItem.Breed.ID).First(&breed)
 	// 根据accountId 和 breedId 进行数据统计 更新 account_breed
 	accountBreedStatisticsResult := AccountBreedStatisticsResult{}
-	db.DB.Model(&BuyBreedItem{}).Where("account_id = ?", buyItem.Account.ID).Where("breed_id = ?", buyItem.Breed.ID).Select("sum(count) as total_count, sum(total_cost) as total_cost").First(&accountBreedStatisticsResult)
+	db.DB.Model(&models.BuyBreedItem{}).Where("account_id = ?", buyItem.Account.ID).Where("breed_id = ?", buyItem.Breed.ID).Select("sum(count) as total_count, sum(total_cost) as total_cost").First(&accountBreedStatisticsResult)
 	breed.TotalCost = accountBreedStatisticsResult.TotalCost
 	breed.TotalCount = accountBreedStatisticsResult.TotalCount
 	breed.Cost = accountBreedStatisticsResult.TotalCost / float64(accountBreedStatisticsResult.TotalCount)
@@ -186,13 +187,13 @@ func addBreedBuytItem(ctx *gin.Context) (*AccountBreedDto, error) {
 	}
 	db.DB.Save(&breed)
 	// 根据 breed 进行统计 更新 breed
-	db.DB.Model(&BuyBreedItem{}).Where("breed_id = ?", buyItem.Breed.ID).Select("sum(count) as total_count, sum(total_cost) as total_cost").First(&accountBreedStatisticsResult)
+	db.DB.Model(&models.BuyBreedItem{}).Where("breed_id = ?", buyItem.Breed.ID).Select("sum(count) as total_count, sum(total_cost) as total_cost").First(&accountBreedStatisticsResult)
 	b.TotalCost = accountBreedStatisticsResult.TotalCost
 	b.TotalCount = accountBreedStatisticsResult.TotalCount
 	b.Cost = accountBreedStatisticsResult.TotalCost / float64(accountBreedStatisticsResult.TotalCount)
 	db.DB.Save(b)
 	// 根据 account 进行统计，更新 account
-	allAccount := &Account{}
+	allAccount := &models.Account{}
 	db.DB.Preload(clause.Associations).First(allAccount, account.ID)
 	totalCost := float64(0)
 	totalProfit := float64(0)
