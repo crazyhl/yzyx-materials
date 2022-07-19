@@ -2,7 +2,7 @@ package account
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/model"
-	"github.com/crazyhl/yzyx-materials/module/breed"
+	"github.com/crazyhl/yzyx-materials/module/domain/dtos"
 )
 
 type AccountDto struct {
@@ -20,10 +20,10 @@ type AccountDto struct {
 
 type AccountBreedDto struct {
 	model.Dto
-	Account                  AccountDto     `json:"account"`
-	Breed                    breed.BreedDto `json:"breed"`                        // 账户品种所属的品种
-	Cost                     float64        `json:"cost"`                         // 成本
-	TotalCount               int64          `json:"total_count"`                  // 总份数
-	TotalCost                float64        `json:"total_cost"`                   // 总成本
-	TotalAccountPerPartCount float64        `json:"total_account_per_part_count"` // 对应账户设置的每份金额所转化后的份数
+	Account                  AccountDto    `json:"account"`
+	Breed                    dtos.BreedDto `json:"breed"`                        // 账户品种所属的品种
+	Cost                     float64       `json:"cost"`                         // 成本
+	TotalCount               int64         `json:"total_count"`                  // 总份数
+	TotalCost                float64       `json:"total_cost"`                   // 总成本
+	TotalAccountPerPartCount float64       `json:"total_account_per_part_count"` // 对应账户设置的每份金额所转化后的份数
 }

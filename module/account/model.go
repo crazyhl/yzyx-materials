@@ -2,7 +2,6 @@ package account
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/model"
-	"github.com/crazyhl/yzyx-materials/module/breed"
 	"github.com/crazyhl/yzyx-materials/module/domain/models"
 )
 
@@ -49,14 +48,14 @@ func (a Account) ToDto() *AccountDto {
 // AccountBreed 账户品种模型
 type AccountBreed struct {
 	model.Model
-	AccountId                uint        `gorm:"not null"`
-	Account                  Account     // 账户品种所属的账户
-	BreedId                  uint        `gorm:"not null"`
-	Breed                    breed.Breed // 账户品种所属的品种
-	TotalAccountPerPartCount float64     `gorm:"type:decimal(20,4);not null;default:0;"`  // 对应账户设置每份金额计算出来的总份数
-	Cost                     float64     `gorm:"type:decimal(20,4);not null;default:0;"`  // 成本
-	TotalCount               int64       `gorm:"not null;default:0;"`                     // 总份数
-	TotalCost                float64     `gorm:"type:decimal(20,4);not null; default:0;"` // 总成本
+	AccountId                uint         `gorm:"not null"`
+	Account                  Account      // 账户品种所属的账户
+	BreedId                  uint         `gorm:"not null"`
+	Breed                    models.Breed // 账户品种所属的品种
+	TotalAccountPerPartCount float64      `gorm:"type:decimal(20,4);not null;default:0;"`  // 对应账户设置每份金额计算出来的总份数
+	Cost                     float64      `gorm:"type:decimal(20,4);not null;default:0;"`  // 成本
+	TotalCount               int64        `gorm:"not null;default:0;"`                     // 总份数
+	TotalCost                float64      `gorm:"type:decimal(20,4);not null; default:0;"` // 总成本
 	// 上面三个字段跟品种区别的就是这几个统计只属于该账户品种的
 }
 
@@ -82,7 +81,7 @@ type BuyBreedItem struct {
 	AccountId uint `gorm:"not null;"`
 	Account   Account
 	BreedId   uint `gorm:"not null;"`
-	Breed     breed.Breed
+	Breed     models.Breed
 	Cost      float64 `gorm:"decimal(20,4);not null;default:0;"` // 成本
 	Count     int64   `gorm:"not null;default:0"`                // 购买份数，如果是卖出则是负数
 	TotalCost float64 `gorm:"decimal(20,4);not null;default:0;"` // 总成本

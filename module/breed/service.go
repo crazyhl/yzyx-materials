@@ -2,13 +2,14 @@ package breed
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/db"
+	"github.com/crazyhl/yzyx-materials/module/domain/dtos"
 	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/gin-gonic/gin"
 )
 
 // add 添加账户
-func add(form addForm) (*BreedDto, error) {
-	breed := &Breed{
+func add(form addForm) (*dtos.BreedDto, error) {
+	breed := &models.Breed{
 		Code:     form.Code,
 		Name:     form.Name,
 		NetValue: form.NetValue,
@@ -26,8 +27,8 @@ func add(form addForm) (*BreedDto, error) {
 }
 
 // edit 编辑账户
-func edit(ctx *gin.Context, form editForm) (*BreedDto, error) {
-	breed := ctx.MustGet("breed").(*Breed)
+func edit(ctx *gin.Context, form editForm) (*dtos.BreedDto, error) {
+	breed := ctx.MustGet("breed").(*models.Breed)
 
 	breed.Code = form.Code
 	breed.Name = form.Name
@@ -52,15 +53,15 @@ func edit(ctx *gin.Context, form editForm) (*BreedDto, error) {
 
 // delete 删除账户
 func delete(ctx *gin.Context) error {
-	breed := ctx.MustGet("breed").(*Breed)
+	breed := ctx.MustGet("breed").(*models.Breed)
 
 	return db.DB.Delete(breed).Error
 }
 
 // listAccounts 获取账户列表
-func list(c *gin.Context) []*BreedDto {
-	breeds := []*Breed{}
-	breedDtos := []*BreedDto{}
+func list(c *gin.Context) []*dtos.BreedDto {
+	breeds := []*models.Breed{}
+	breedDtos := []*dtos.BreedDto{}
 	query := db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(models.User).ID).Order("id desc")
 	filter := c.Query("filter")
 	if filter != "" {
@@ -75,13 +76,13 @@ func list(c *gin.Context) []*BreedDto {
 
 func getCount(c *gin.Context) int64 {
 	count := int64(0)
-	db.DB.Model(&Breed{}).Where("user_id = ?", c.MustGet("user").(models.User).ID).Count(&count)
+	db.DB.Model(&models.Breed{}).Where("user_id = ?", c.MustGet("user").(models.User).ID).Count(&count)
 	return count
 }
 
 // updateNetValue 更新净值
-func updateNetValue(ctx *gin.Context, netValue float64) (*BreedDto, error) {
-	breed := ctx.MustGet("breed").(*Breed)
+func updateNetValue(ctx *gin.Context, netValue float64) (*dtos.BreedDto, error) {
+	breed := ctx.MustGet("breed").(*models.Breed)
 
 	breed.NetValue = netValue
 	breed.TotalNetValue = float64(breed.TotalCount) * netValue
@@ -98,8 +99,8 @@ func updateNetValue(ctx *gin.Context, netValue float64) (*BreedDto, error) {
 }
 
 // getByIdInternal 获取账户
-func GetByIdInternal(id uint) (*Breed, error) {
-	breed := &Breed{}
+func GetByIdInternal(id uint) (*models.Breed, error) {
+	breed := &models.Breed{}
 	if err := db.DB.First(breed, id).Error; err != nil {
 		return nil, ErrBreedNotFound
 	}
@@ -108,7 +109,7 @@ func GetByIdInternal(id uint) (*Breed, error) {
 }
 
 // getByIdWithUidInternal 获取账户并校验 uid
-func GetByIdWithUidInternal(id uint, uid uint) (*Breed, error) {
+func GetByIdWithUidInternal(id uint, uid uint) (*models.Breed, error) {
 	breed, err := GetByIdInternal(id)
 	if err != nil {
 		return nil, err
