@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/crazyhl/yzyx-materials/internal/params"
-	"github.com/crazyhl/yzyx-materials/module/user"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +17,7 @@ func CheckBreedUid(ctx *gin.Context) {
 		})
 		return
 	}
-	breed, err := GetByIdWithUidInternal(id, ctx.MustGet("user").(user.User).ID)
+	breed, err := GetByIdWithUidInternal(id, ctx.MustGet("user").(models.User).ID)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"code":    http.StatusBadRequest,

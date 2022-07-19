@@ -1,7 +1,8 @@
-package user
+package models
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/model"
+	"github.com/crazyhl/yzyx-materials/module/domain/dtos"
 	"github.com/golang-jwt/jwt"
 )
 
@@ -18,8 +19,8 @@ type UserJwtClaims struct {
 	jwt.StandardClaims
 }
 
-func (u User) ToDto() *UserDto {
-	return &UserDto{
+func (u User) ToDto() *dtos.UserDto {
+	return &dtos.UserDto{
 		ID:       u.ID,
 		Username: u.Username,
 	}

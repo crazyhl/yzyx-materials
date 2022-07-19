@@ -2,7 +2,7 @@ package breed
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/db"
-	"github.com/crazyhl/yzyx-materials/module/user"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -61,7 +61,7 @@ func delete(ctx *gin.Context) error {
 func list(c *gin.Context) []*BreedDto {
 	breeds := []*Breed{}
 	breedDtos := []*BreedDto{}
-	query := db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(user.User).ID).Order("id desc")
+	query := db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(models.User).ID).Order("id desc")
 	filter := c.Query("filter")
 	if filter != "" {
 		query.Where(db.DB.Where("code like ?", "%"+filter+"%").Or("name like ?", "%"+filter+"%"))
@@ -75,7 +75,7 @@ func list(c *gin.Context) []*BreedDto {
 
 func getCount(c *gin.Context) int64 {
 	count := int64(0)
-	db.DB.Model(&Breed{}).Where("user_id = ?", c.MustGet("user").(user.User).ID).Count(&count)
+	db.DB.Model(&Breed{}).Where("user_id = ?", c.MustGet("user").(models.User).ID).Count(&count)
 	return count
 }
 
@@ -89,7 +89,8 @@ func updateNetValue(ctx *gin.Context, netValue float64) (*BreedDto, error) {
 	if err := db.DB.Save(breed).Error; err != nil {
 		return nil, err
 	}
-
+	// 获取这个用户绑定了品种的账户，对有这个品种的账户进行数据更新
+	// accountbreed.UpdateAccountProfit(breed.ID, ctx.MustGet("user").(*user.User).ID)
 	// 将 account 转换为 AccountDto
 	breedTto := breed.ToDto()
 

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/crazyhl/yzyx-materials/internal/db"
-	"github.com/crazyhl/yzyx-materials/module/user"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm/clause"
 )
@@ -15,7 +15,7 @@ type accountAddForm struct {
 	ExpectTotalMoney   float64 `form:"expect_total_money" json:"expect_total_money" binding:"required_with:PerPartMoney|float|gt:0" label:"预计投入总金额"`
 	PerPartMoney       float64 `form:"per_part_money" json:"per_part_money" binding:"float|gt:0" label:"每份投入金额"`
 	ExpectRateOfReturn uint8   `form:"expect_rate_of_return" json:"expect_rate_of_return" binding:"uint|lte:100" label:"预计收益率"`
-	User               user.User
+	User               models.User
 }
 
 // 添加账户
@@ -28,7 +28,7 @@ func Add(c *gin.Context) {
 		})
 		return
 	}
-	accAddForm.User = c.MustGet("user").(user.User)
+	accAddForm.User = c.MustGet("user").(models.User)
 	accountDto, err := add(accAddForm)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

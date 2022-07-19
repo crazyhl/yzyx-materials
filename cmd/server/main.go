@@ -11,7 +11,7 @@ import (
 	_ "github.com/crazyhl/yzyx-materials/internal/validator"
 	"github.com/crazyhl/yzyx-materials/module/account"
 	"github.com/crazyhl/yzyx-materials/module/breed"
-	"github.com/crazyhl/yzyx-materials/module/user"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/crazyhl/yzyx-materials/route"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/gzip"
@@ -64,9 +64,9 @@ func init() {
 	initLogger()
 	initViper()
 	db.InitDb()
-	user.AutoMigrate()
 	account.AutoMigrate()
 	breed.AutoMigrate()
+	models.AutoMigrate()
 }
 
 func main() {

@@ -2,6 +2,8 @@ package user
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/db"
+	"github.com/crazyhl/yzyx-materials/module/domain/dtos"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/golang-jwt/jwt"
 	"github.com/golang-module/carbon/v2"
 	log "github.com/sirupsen/logrus"
@@ -10,20 +12,20 @@ import (
 )
 
 // Register 用户注册
-func register(username, password string) (*UserDto, error) {
+func register(username, password string) (*dtos.UserDto, error) {
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Error("generate password err: ", err)
 		return nil, err
 	}
-	user := &User{
+	user := &models.User{
 		Username: username,
 		Password: string(hashPassword),
 	}
 	result := db.DB.Create(user)
 
 	if user.ID > 0 {
-		userDto := &UserDto{}
+		userDto := &dtos.UserDto{}
 		tokenStr, err := GenerateJWT(*user)
 		if err != nil {
 			return userDto, ErrGetJWTError
@@ -38,9 +40,9 @@ func register(username, password string) (*UserDto, error) {
 }
 
 // login 登录
-func login(username, password string) (*UserDto, error) {
-	userDto := &UserDto{}
-	user := &User{}
+func login(username, password string) (*dtos.UserDto, error) {
+	userDto := &dtos.UserDto{}
+	user := &models.User{}
 	db.DB.Where("username = ?", username).First(&user)
 	if user.ID > 0 {
 		// 找到用户了
@@ -65,8 +67,8 @@ func login(username, password string) (*UserDto, error) {
 }
 
 // generateJWT 生成JWT
-func GenerateJWT(user User) (string, error) {
-	claims := &UserJwtClaims{
+func GenerateJWT(user models.User) (string, error) {
+	claims := &models.UserJwtClaims{
 		ID:       user.ID,
 		UserName: user.Username,
 	}
@@ -84,11 +86,11 @@ func GenerateJWT(user User) (string, error) {
 }
 
 // ParseJWT 转换解析JWT
-func ParseJwt(authorization string) (*UserJwtClaims, error) {
+func ParseJwt(authorization string) (*models.UserJwtClaims, error) {
 	jwtStringHeader := authorization[0:6]
 	if jwtStringHeader == "Bearer" {
 		jwtStringBody := authorization[7:]
-		token, err := jwt.ParseWithClaims(jwtStringBody, &UserJwtClaims{}, func(token *jwt.Token) (interface{}, error) {
+		token, err := jwt.ParseWithClaims(jwtStringBody, &models.UserJwtClaims{}, func(token *jwt.Token) (interface{}, error) {
 			return []byte(viper.GetString("JWT_SECRET")), nil
 		})
 
@@ -97,7 +99,7 @@ func ParseJwt(authorization string) (*UserJwtClaims, error) {
 			return nil, ErrorJWTInvalid
 		}
 
-		if claims, ok := token.Claims.(*UserJwtClaims); ok && token.Valid {
+		if claims, ok := token.Claims.(*models.UserJwtClaims); ok && token.Valid {
 			// 验证时间
 			return claims, nil
 		} else {
@@ -110,8 +112,8 @@ func ParseJwt(authorization string) (*UserJwtClaims, error) {
 }
 
 // GetByUid 根据uid获取用户
-func GetByUid(id uint) (User, error) {
-	user := &User{}
+func GetByUid(id uint) (models.User, error) {
+	user := &models.User{}
 	result := db.DB.First(&user, id)
 	if result.Error != nil {
 		return *user, ErrUserNotFound

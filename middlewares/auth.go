@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon/v2"
@@ -58,7 +59,7 @@ func AuthRequired() gin.HandlerFunc {
 func compareExpiredAndRenewToken(c *gin.Context, now, claimsExpiresAt int64) {
 	if now-claimsExpiresAt < 86400 {
 		// 如果当前时间减去 jwt 的过期时间小于一天，则续期
-		tokenStr, err := user.GenerateJWT(c.MustGet("user").(user.User))
+		tokenStr, err := user.GenerateJWT(c.MustGet("user").(models.User))
 		if err == nil {
 			// 如果生成 token 成功，则把 token 放到 header 中
 			c.Header("authorization", tokenStr)

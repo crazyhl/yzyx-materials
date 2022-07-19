@@ -3,9 +3,12 @@ module github.com/crazyhl/yzyx-materials
 go 1.18
 
 require (
+	github.com/gin-contrib/cors v1.3.1
+	github.com/gin-contrib/gzip v0.0.5
 	github.com/gin-gonic/gin v1.7.7
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-module/carbon/v2 v2.1.2
+	github.com/gookit/validate v1.3.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.11.0
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4

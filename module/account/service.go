@@ -4,7 +4,7 @@ import (
 	"github.com/crazyhl/yzyx-materials/internal/db"
 	"github.com/crazyhl/yzyx-materials/internal/model"
 	"github.com/crazyhl/yzyx-materials/module/breed"
-	"github.com/crazyhl/yzyx-materials/module/user"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-module/carbon/v2"
 	"gorm.io/gorm/clause"
@@ -34,7 +34,7 @@ func add(form accountAddForm) (*AccountDto, error) {
 func list(c *gin.Context) []*AccountDto {
 	accounts := []*Account{}
 	accountDtos := []*AccountDto{}
-	db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(user.User).ID).Order("id desc").Find(&accounts)
+	db.DB.Scopes(db.Paginate(c)).Where("user_id = ?", c.MustGet("user").(models.User).ID).Order("id desc").Find(&accounts)
 	for _, account := range accounts {
 		accountDtos = append(accountDtos, account.ToDto())
 	}
@@ -43,7 +43,7 @@ func list(c *gin.Context) []*AccountDto {
 
 func getCount(c *gin.Context) int64 {
 	count := int64(0)
-	db.DB.Model(&Account{}).Where("user_id = ?", c.MustGet("user").(user.User).ID).Count(&count)
+	db.DB.Model(&Account{}).Where("user_id = ?", c.MustGet("user").(models.User).ID).Count(&count)
 	return count
 }
 
@@ -114,7 +114,7 @@ func bindBreed(ctx *gin.Context) (*AccountBreedDto, error) {
 		return nil, err
 	}
 	breedId := form.Id
-	b, err := breed.GetByIdWithUidInternal(breedId, ctx.MustGet("user").(user.User).ID)
+	b, err := breed.GetByIdWithUidInternal(breedId, ctx.MustGet("user").(models.User).ID)
 	if err != nil {
 		return nil, err
 	}
@@ -153,7 +153,7 @@ func addBreedBuytItem(ctx *gin.Context) (*AccountBreedDto, error) {
 		return nil, err
 	}
 	breedId := form.Id
-	b, err := breed.GetByIdWithUidInternal(breedId, ctx.MustGet("user").(user.User).ID)
+	b, err := breed.GetByIdWithUidInternal(breedId, ctx.MustGet("user").(models.User).ID)
 	if err != nil {
 		return nil, err
 	}

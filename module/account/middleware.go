@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/crazyhl/yzyx-materials/internal/params"
-	"github.com/crazyhl/yzyx-materials/module/user"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +19,7 @@ func CheckAccountUid() gin.HandlerFunc {
 			})
 			return
 		}
-		account, err := GetByIdWithUidInternal(id, c.MustGet("user").(user.User).ID)
+		account, err := GetByIdWithUidInternal(id, c.MustGet("user").(models.User).ID)
 
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{

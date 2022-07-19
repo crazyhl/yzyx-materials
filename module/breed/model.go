@@ -2,21 +2,21 @@ package breed
 
 import (
 	"github.com/crazyhl/yzyx-materials/internal/model"
-	"github.com/crazyhl/yzyx-materials/module/user"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 )
 
 // 品种 Model
 type Breed struct {
 	model.Model
-	UserId        uint      `gorm:"not null;uniqueIndex: uk_uid_code;"` // 用户ID
-	User          user.User // 账户所属用户，外键
-	Code          string    `gorm:"type:varchar(32);not null;uniqueIndex: uk_uid_code;"` // 编码
-	Name          string    `gorm:"type:varchar(32);not null;"`                          // 名称
-	NetValue      float64   `gorm:"type:decimal(20,4);not null;default:0;"`              // 净值
-	Cost          float64   `gorm:"type:decimal(20,4);not null;default:0;"`              // 成本
-	TotalCount    int64     `gorm:"not null;default:0;"`                                 // 总份数
-	TotalCost     float64   `gorm:"type:decimal(20,4);not null; default:0;"`             // 总成本
-	TotalNetValue float64   `gorm:"type:decimal(20,4);not null; default:0"`              // 总净值
+	UserId        uint        `gorm:"not null;uniqueIndex: uk_uid_code;"` // 用户ID
+	User          models.User // 账户所属用户，外键
+	Code          string      `gorm:"type:varchar(32);not null;uniqueIndex: uk_uid_code;"` // 编码
+	Name          string      `gorm:"type:varchar(32);not null;"`                          // 名称
+	NetValue      float64     `gorm:"type:decimal(20,4);not null;default:0;"`              // 净值
+	Cost          float64     `gorm:"type:decimal(20,4);not null;default:0;"`              // 成本
+	TotalCount    int64       `gorm:"not null;default:0;"`                                 // 总份数
+	TotalCost     float64     `gorm:"type:decimal(20,4);not null; default:0;"`             // 总成本
+	TotalNetValue float64     `gorm:"type:decimal(20,4);not null; default:0"`              // 总净值
 }
 
 func (breed *Breed) ToDto() *BreedDto {

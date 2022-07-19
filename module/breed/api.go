@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/crazyhl/yzyx-materials/internal/db"
-	"github.com/crazyhl/yzyx-materials/module/user"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,7 +14,7 @@ type addForm struct {
 	Name     string  `form:"name" json:"name" binding:"required"`
 	NetValue float64 `form:"net_value" json:"net_value"`
 	Cost     float64 `form:"cost" json:"cost"`
-	User     user.User
+	User     models.User
 }
 
 func Add(ctx *gin.Context) {
@@ -26,7 +26,7 @@ func Add(ctx *gin.Context) {
 		})
 		return
 	}
-	form.User = ctx.MustGet("user").(user.User)
+	form.User = ctx.MustGet("user").(models.User)
 	breedDto, err := add(form)
 	if err != nil {
 		message := err.Error()
@@ -144,7 +144,7 @@ func UpdateNetValue(ctx *gin.Context) {
 func AllList(ctx *gin.Context) {
 	breeds := []*Breed{}
 	breedDtos := []*BreedDto{}
-	query := db.DB.Select([]string{"id", "code", "name"}).Where("user_id = ?", ctx.MustGet("user").(user.User).ID).Order("id desc")
+	query := db.DB.Select([]string{"id", "code", "name"}).Where("user_id = ?", ctx.MustGet("user").(models.User).ID).Order("id desc")
 	query.Find(&breeds)
 	for _, breed := range breeds {
 		breedDtos = append(breedDtos, breed.ToDto())
