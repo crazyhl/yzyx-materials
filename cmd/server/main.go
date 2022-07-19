@@ -7,7 +7,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/asaskevich/EventBus"
 	"github.com/crazyhl/yzyx-materials/internal/bus"
 	"github.com/crazyhl/yzyx-materials/internal/db"
 	_ "github.com/crazyhl/yzyx-materials/internal/validator"
@@ -64,13 +63,13 @@ func initViper() {
 func init() {
 	initLogger()
 	initViper()
+	bus.Init()
 	db.InitDb()
 	models.AutoMigrate()
+	account.InitBus()
 }
 
 func main() {
-	bus.Bus = EventBus.New()
-	bus.Bus.Subscribe("account:updateProfit", account.UpdateAccountProfit)
 	// init gin
 	gin.SetMode(viper.GetString("RUN_MODE"))
 	router := gin.Default()
@@ -105,7 +104,7 @@ func main() {
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	log.Println("Shutdown Server ...")
-	bus.Bus.Unsubscribe("account:updateProfit", account.UpdateAccountProfit)
+	account.DestoryBus()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
