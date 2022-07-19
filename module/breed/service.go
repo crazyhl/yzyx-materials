@@ -1,6 +1,7 @@
 package breed
 
 import (
+	"github.com/crazyhl/yzyx-materials/internal/bus"
 	"github.com/crazyhl/yzyx-materials/internal/db"
 	"github.com/crazyhl/yzyx-materials/module/domain/dtos"
 	"github.com/crazyhl/yzyx-materials/module/domain/models"
@@ -91,7 +92,8 @@ func updateNetValue(ctx *gin.Context, netValue float64) (*dtos.BreedDto, error) 
 		return nil, err
 	}
 	// 获取这个用户绑定了品种的账户，对有这个品种的账户进行数据更新
-	// accountbreed.UpdateAccountProfit(breed.ID, ctx.MustGet("user").(*user.User).ID)
+	// account.UpdateAccountProfit(breed.ID)
+	bus.Bus.Publish("account:updateProfit", breed.ID)
 	// 将 account 转换为 AccountDto
 	breedTto := breed.ToDto()
 

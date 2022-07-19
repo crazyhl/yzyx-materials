@@ -3,6 +3,7 @@ package route
 import (
 	"github.com/crazyhl/yzyx-materials/middlewares"
 	"github.com/crazyhl/yzyx-materials/module/account"
+	accountbreed "github.com/crazyhl/yzyx-materials/module/account-breed"
 	"github.com/crazyhl/yzyx-materials/module/breed"
 	"github.com/crazyhl/yzyx-materials/module/user"
 	"github.com/gin-gonic/gin"
@@ -29,8 +30,8 @@ func InitRouter(router *gin.Engine) {
 			acc.Use(account.CheckAccountUid())
 			{
 				acc.GET("/:id", account.Detail)
-				acc.POST("/:id/bindBreed", account.BindBreed)
-				acc.POST("/:id/addBreedBuyItem", account.AddBreedBuytItem)
+				acc.POST("/:id/bindBreed", accountbreed.BindBreed)
+				acc.POST("/:id/addBreedBuyItem", accountbreed.AddBreedBuytItem)
 				acc.DELETE("/delete/:id", account.Delete)
 				acc.PUT("/update/:id", account.Edit)
 			}

@@ -7,8 +7,11 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/asaskevich/EventBus"
+	"github.com/crazyhl/yzyx-materials/internal/bus"
 	"github.com/crazyhl/yzyx-materials/internal/db"
 	_ "github.com/crazyhl/yzyx-materials/internal/validator"
+	"github.com/crazyhl/yzyx-materials/module/account"
 	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/crazyhl/yzyx-materials/route"
 	"github.com/gin-contrib/cors"
@@ -66,6 +69,9 @@ func init() {
 }
 
 func main() {
+	bus.Bus = EventBus.New()
+	bus.Bus.Subscribe("account:updateProfit", account.UpdateAccountProfit)
+	// init gin
 	gin.SetMode(viper.GetString("RUN_MODE"))
 	router := gin.Default()
 	router.Use(gzip.Gzip(gzip.DefaultCompression))
@@ -99,7 +105,7 @@ func main() {
 	signal.Notify(quit, os.Interrupt)
 	<-quit
 	log.Println("Shutdown Server ...")
-
+	bus.Bus.Unsubscribe("account:updateProfit", account.UpdateAccountProfit)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
