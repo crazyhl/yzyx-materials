@@ -16,6 +16,7 @@ type accountAddBreedBuyItemForm struct {
 	CreateAt int64   `form:"create_at" json:"create_at" binding:"required" label:"买入时间"`
 	Cost     float64 `form:"cost" json:"cost" binding:"required" label:"购买单价"`
 	Count    int64   `form:"count" json:"count" binding:"required" label:"购买份数"`
+	Fee      float64 `form:"fee" json:"fee" binding:"required" label:"手续费"`
 }
 
 type AccountBreedStatisticsResult struct {
@@ -43,7 +44,8 @@ func addBreedBuytItem(ctx *gin.Context) (*dtos.AccountBreedDto, error) {
 		},
 		Cost:      form.Cost,
 		Count:     form.Count,
-		TotalCost: form.Cost * float64(form.Count),
+		Fee:       form.Fee,
+		TotalCost: form.Cost*float64(form.Count) + form.Fee,
 	}
 	if err := db.DB.Create(&buyItem).Error; err != nil {
 		return nil, err
@@ -70,7 +72,7 @@ func addBreedBuytItem(ctx *gin.Context) (*dtos.AccountBreedDto, error) {
 	db.DB.Save(b)
 	// 根据 account 进行统计，更新 account
 	allAccount := &models.Account{}
-	db.DB.Preload(clause.Associations).First(allAccount, account.ID)
+	db.DB.Preload("Breeds.Breed").First(allAccount, account.ID)
 	totalCost := float64(0)
 	totalProfit := float64(0)
 	for _, b := range allAccount.Breeds {

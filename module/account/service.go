@@ -116,8 +116,7 @@ func UpdateAccountProfit(breedId uint) {
 		for _, b := range account.Breeds {
 			totalCost += b.TotalCost //  加入每个账户的总投入
 			// 计算利润 品种的总市值 - 品种总投入
-			fmt.Println("b.Breed.NetValue", b, b.Breed.NetValue)
-			totalProfit += b.Breed.NetValue*float64(b.TotalCount) - b.TotalCost
+			totalProfit += (b.Breed.NetValue*float64(b.TotalCount) - b.TotalCost)
 		}
 		account.TotalMoney = totalCost
 		account.ProfitAmount = totalProfit
