@@ -24,3 +24,11 @@ type AccountBreedDto struct {
 	TotalCost                float64    `json:"total_cost"`                   // 总成本
 	TotalAccountPerPartCount float64    `json:"total_account_per_part_count"` // 对应账户设置的每份金额所转化后的份数
 }
+
+type BuyBreedItemDto struct {
+	model.Dto
+	Cost      float64 `json:"cost"`       // 成本
+	Count     int64   `json:"count"`      // 购买份数，如果是卖出则是负数
+	Fee       float64 `json:"fee"`        // 手续费
+	TotalCost float64 `json:"total_cost"` // 总成本
+}

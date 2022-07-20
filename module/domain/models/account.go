@@ -87,3 +87,17 @@ type BuyBreedItem struct {
 	Fee       float64 `gorm:"decimal(20,4);not null;default:0;"` // 手续费
 	TotalCost float64 `gorm:"decimal(20,4);not null;default:0;"` // 总成本
 }
+
+func (b *BuyBreedItem) ToDto() *dtos.BuyBreedItemDto {
+	return &dtos.BuyBreedItemDto{
+		Dto: model.Dto{
+			ID:        b.ID,
+			CreatedAt: b.CreatedAt,
+			UpdatedAt: b.UpdatedAt,
+		},
+		Cost:      b.Cost,
+		Count:     b.Count,
+		Fee:       b.Fee,
+		TotalCost: b.TotalCost,
+	}
+}

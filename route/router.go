@@ -34,6 +34,7 @@ func InitRouter(router *gin.Engine) {
 				acc.POST("/:id/addBreedBuyItem", accountbreed.AddBreedBuytItem)
 				acc.DELETE("/delete/:id", account.Delete)
 				acc.PUT("/update/:id", account.Edit)
+				acc.GET("/:id/breed/:breedId/buyItemList", accountbreed.BuyItemList)
 			}
 		}
 

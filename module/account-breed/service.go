@@ -117,3 +117,28 @@ func bindBreed(ctx *gin.Context) (*dtos.AccountBreedDto, error) {
 
 	return accountBreed.ToDto(), nil
 }
+
+// buyItemList 账户的某个品种购买列表
+func buyItemList(ctx *gin.Context) []dtos.BuyBreedItemDto {
+	// 根据 account_id 和 breed_id 获取品种购买列表就ok了
+	buyItems := make([]models.BuyBreedItem, 0)
+	db.DB.Scopes(db.Paginate(ctx)).
+		Where("account_id = ?", ctx.Param("id")).
+		Where("breed_id = ?", ctx.Param("breedId")).
+		Order("created_at DESC").Find(&buyItems)
+	buyItemDtos := make([]dtos.BuyBreedItemDto, 0)
+	for _, item := range buyItems {
+		buyItemDtos = append(buyItemDtos, *item.ToDto())
+	}
+	return buyItemDtos
+}
+
+// getBuyItemCount 获取账户品种购买记录数量
+func getBuyItemCount(ctx *gin.Context) int64 {
+	count := int64(0)
+	db.DB.Model(&models.BuyBreedItem{}).
+		Where("account_id = ?", ctx.Param("id")).
+		Where("breed_id = ?", ctx.Param("breedId")).
+		Count(&count)
+	return count
+}

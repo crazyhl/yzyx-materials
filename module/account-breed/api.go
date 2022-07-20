@@ -3,6 +3,9 @@ package accountbreed
 import (
 	"net/http"
 
+	"github.com/crazyhl/yzyx-materials/internal/params"
+	"github.com/crazyhl/yzyx-materials/module/breed"
+	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,4 +42,32 @@ func AddBreedBuytItem(ctx *gin.Context) {
 			"data":    breedDto,
 		})
 	}
+}
+
+func BuyItemList(ctx *gin.Context) {
+	breedId, err := params.GetUInt(ctx, "id")
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+	}
+	b, err := breed.GetByIdWithUidInternal(breedId, ctx.MustGet("user").(models.User).ID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+	}
+	acc := ctx.MustGet("account").(*models.Account)
+	buyItems := buyItemList(ctx)
+	count := getBuyItemCount(ctx)
+	ctx.JSON(http.StatusOK, gin.H{
+		"code":    http.StatusOK,
+		"message": "账户: " + acc.Name + " : " + b.Name + "(" + b.Code + ")购买记录",
+		"data": gin.H{
+			"data":  buyItems,
+			"count": count,
+		},
+	})
 }
