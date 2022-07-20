@@ -44,6 +44,22 @@ func AddBreedBuytItem(ctx *gin.Context) {
 	}
 }
 
+func UpdateBreedBuytItem(ctx *gin.Context) {
+	breedItemDto, err := updateBreedBuytItem(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"code":    http.StatusBadRequest,
+			"message": "err: " + err.Error(),
+		})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    http.StatusOK,
+			"message": "添加购买记录成功",
+			"data":    breedItemDto,
+		})
+	}
+}
+
 func BuyItemList(ctx *gin.Context) {
 	breedId, err := params.GetUInt(ctx, "id")
 	if err != nil {

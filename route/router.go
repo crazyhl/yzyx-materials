@@ -43,6 +43,7 @@ func InitRouter(router *gin.Engine) {
 			b.POST("/add", breed.Add)
 			b.GET("/list", breed.List)
 			b.GET("/allList", breed.AllList)
+			b.PUT("/updateBuyItem", accountbreed.UpdateBreedBuytItem)
 			b.Use(breed.CheckBreedUid)
 			{
 				b.PUT("/:id", breed.Edit)
