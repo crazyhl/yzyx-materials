@@ -73,6 +73,7 @@ func updateBreedBuytItem(ctx *gin.Context) (*dtos.BuyBreedItemDto, error) {
 	buyItem.Count = form.Count
 	buyItem.Fee = form.Fee
 	buyItem.TotalCost = form.Cost*float64(form.Count) + form.Fee
+	buyItem.CreatedAt = form.CreateAt
 	if err := db.DB.Save(&buyItem).Error; err != nil {
 		return nil, err
 	}
