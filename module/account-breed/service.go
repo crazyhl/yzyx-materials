@@ -16,7 +16,7 @@ type accountAddBreedBuyItemForm struct {
 	CreateAt int64   `form:"create_at" json:"create_at" binding:"required" label:"买入时间"`
 	Cost     float64 `form:"cost" json:"cost" binding:"required" label:"购买单价"`
 	Count    int64   `form:"count" json:"count" binding:"required" label:"购买份数"`
-	Fee      float64 `form:"fee" json:"fee" binding:"required" label:"手续费"`
+	Fee      float64 `form:"fee" json:"fee" binding:"get=0,number,required" label:"手续费"`
 }
 
 type AccountBreedStatisticsResult struct {
