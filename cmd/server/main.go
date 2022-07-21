@@ -9,7 +9,6 @@ import (
 
 	"github.com/crazyhl/yzyx-materials/internal/bus"
 	"github.com/crazyhl/yzyx-materials/internal/db"
-	_ "github.com/crazyhl/yzyx-materials/internal/validator"
 	"github.com/crazyhl/yzyx-materials/module/account"
 	"github.com/crazyhl/yzyx-materials/module/domain/models"
 	"github.com/crazyhl/yzyx-materials/route"
