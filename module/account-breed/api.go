@@ -61,7 +61,7 @@ func UpdateBreedBuytItem(ctx *gin.Context) {
 }
 
 func BuyItemList(ctx *gin.Context) {
-	breedId, err := params.GetUInt(ctx, "id")
+	breedId, err := params.GetUInt(ctx, "breedId")
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"code":    http.StatusBadRequest,
